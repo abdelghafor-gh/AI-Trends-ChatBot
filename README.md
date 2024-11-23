@@ -2,17 +2,9 @@
 
 ## Sources
 
-#### [AI - AI-Tech Park](https://ai-techpark.com/ai/)
-
-- RSS Feed: [ai-techpark.com/feed/](https://ai-techpark.com/feed/)
-
 #### [SiliconANGLE - AI](https://siliconangle.com/category/ai/)
 
 - RSS Feed: [siliconangle.com/category/ai/feed/](https://siliconangle.com/category/ai/feed/)
-
-#### [ΑΙhub | Connecting the AI community and the world](https://aihub.org/category/news/)
-
-- RSS Feed: [aihub.org/category/news/feed/](https://aihub.org/category/news/feed/)
 
 #### [Amazon Science](https://www.amazon.science/)
 
@@ -21,11 +13,6 @@
 #### [Analytics India Magazine (AIM) | Artificial Intelligence, And Its Commercial, Social And Political Impact](https://analyticsindiamag.com/)
 
 - Rss feed: [analyticsindiamag.com/feed/](https://analyticsindiamag.com/feed/)
-
-#### [Ars Technica - Category: AI](https://arstechnica.com/ai/)
-
-- RSS Feeds: [RSS Feeds - Ars Technica](https://arstechnica.com/rss-feeds/)
-- Tech Rss Feed: [feeds.arstechnica.com/arstechnica/technology-lab](https://feeds.arstechnica.com/arstechnica/technology-lab)
 
 #### [AI News - Artificial Intelligence News](https://www.artificialintelligence-news.com/)
 
@@ -117,6 +104,11 @@
 
 - RSS Feed: [aiacceleratorinstitute.com/rss/](https://www.aiacceleratorinstitute.com/rss/)
 
+#### [Ars Technica - Category: AI](https://arstechnica.com/ai/)
+
+- RSS Feeds: [RSS Feeds - Ars Technica](https://arstechnica.com/rss-feeds/)
+- Tech Rss Feed: [feeds.arstechnica.com/arstechnica/technology-lab](https://feeds.arstechnica.com/arstechnica/technology-lab)
+
 #### [Synced](https://syncedreview.com/)
 
 - RSS Feed: [syncedreview.com/feed/](https://syncedreview.com/feed/)
@@ -126,3 +118,11 @@
 #### [Machine Learning ML &amp; Generative AI News](https://www.reddit.com/r/machinelearningnews/)
 
 - API json: [reddit.com/r/machinelearningnews.json?limit=50](https://www.reddit.com/r/machinelearningnews.json?limit=50)
+
+#### [ΑΙhub | Connecting the AI community and the world](https://aihub.org/category/news/)
+
+- RSS Feed: [aihub.org/category/news/feed/](https://aihub.org/category/news/feed/)
+
+#### [AI - AI-Tech Park](https://ai-techpark.com/ai/)
+
+- RSS Feed: [ai-techpark.com/feed/](https://ai-techpark.com/feed/)
