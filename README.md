@@ -1,6 +1,52 @@
-# AI-Trends-ChatBot
+# AI Trends ChatBot
 
-## Sources
+A modern AI-powered chatbot that provides insights about the latest AI trends and news. The application consists of three main components:
+
+1. Next.js Frontend - A modern, responsive chat interface
+2. n8n Backend - Workflow automation for processing and managing chat interactions
+3. Azure Functions - Data scraping scripts for collecting AI news from various RSS feeds
+
+## Project Structure
+
+```
+AI-Trends-ChatBot/
+├── frontend/               # Next.js frontend application
+├── n8n-workflows/         # n8n workflow configurations
+└── azure-functions/       # Azure Functions for RSS scraping
+    └── rss-scraper/      # RSS feed scraping function
+```
+
+## Setup Instructions
+
+### Frontend Setup (Next.js)
+1. Navigate to the frontend directory
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### n8n Setup
+1. Install n8n globally
+```bash
+npm install n8n -g
+```
+2. Start n8n
+```bash
+n8n start
+```
+3. Import the workflow configurations from the n8n-workflows directory
+
+### Azure Functions Setup
+1. Install Azure Functions Core Tools
+2. Navigate to azure-functions directory
+3. Deploy the functions using Azure CLI
+```bash
+az login
+az functionapp deploy
+```
+
+## RSS Feed Sources
 
 #### [SiliconANGLE - AI](https://siliconangle.com/category/ai/)
 
@@ -126,3 +172,21 @@
 #### [AI - AI-Tech Park](https://ai-techpark.com/ai/)
 
 - RSS Feed: [ai-techpark.com/feed/](https://ai-techpark.com/feed/)
+
+## Features
+- Real-time chat interface
+- AI trend analysis and insights
+- Automated news collection and processing
+- Natural language processing for better user interactions
+
+## Tech Stack
+- Frontend: Next.js 13, React, TailwindCSS
+- Backend: n8n for workflow automation
+- Data Collection: Azure Functions, Node.js
+- Database: MongoDB (for storing processed news and chat history)
+
+## Contributing
+Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
+
+## License
+MIT License
