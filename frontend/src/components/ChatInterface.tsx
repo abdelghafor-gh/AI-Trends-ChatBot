@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { Send, Loader2, Plus, Trash } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useChatStore } from '@/lib/store'
-import { chatApi } from '@/lib/api'
+import { api } from '@/lib/api'
 import { format } from 'date-fns'
 
 export default function ChatInterface() {
@@ -51,7 +51,7 @@ export default function ChatInterface() {
 
     try {
       // Send message to API
-      const response = await chatApi.sendMessage(inputText)
+      const response = await api.chat.sendMessage(inputText)
 
       if (response.error) throw new Error(response.error)
 

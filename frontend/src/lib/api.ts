@@ -39,7 +39,7 @@ export interface WeeklySummary {
 class ChatAPI {
   private baseUrl = API_BASE_URL
 
-  async getConversations(): Promise<{ data: Conversation[] }> {
+  async getConversations(): Promise<ApiResponse<Conversation[]>> {
     const response = await fetch(`${this.baseUrl}/conversations`)
     if (!response.ok) {
       throw new Error('Failed to fetch conversations')
@@ -48,12 +48,9 @@ class ChatAPI {
     return { data }
   }
 
-  async createConversation(): Promise<{ data: Conversation }> {
+  async createConversation(): Promise<ApiResponse<Conversation>> {
     const response = await fetch(`${this.baseUrl}/conversations`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
     })
     if (!response.ok) {
       throw new Error('Failed to create conversation')
@@ -95,30 +92,31 @@ class ChatAPI {
       throw new Error('Failed to add message')
     }
   }
+
+  async sendMessage(message: string): Promise<ApiResponse<{ response: string }>> {
+    try {
+      const response = await fetch(`${this.baseUrl}/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message }),
+      })
+      
+      if (!response.ok) throw new Error('Failed to send message')
+      const data = await response.json()
+      return { data }
+    } catch (error) {
+      return { error: error instanceof Error ? error.message : 'Failed to send message' }
+    }
+  }
 }
 
-export const chatApi = new ChatAPI()
+// export const chatApi = new ChatAPI()
 
 export const api = {
   // Chat endpoints
-  chat: {
-    sendMessage: async (message: string): Promise<ApiResponse<{ text: string }>> => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/chat`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ message }),
-        })
-        
-        if (!res.ok) throw new Error('Failed to send message')
-        return { data: await res.json() }
-      } catch (error) {
-        return { error: error instanceof Error ? error.message : 'Failed to send message' }
-      }
-    }
-  },
+  chat: new ChatAPI(),
 
   // News endpoints
   news: {

@@ -9,15 +9,16 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
+  secret: process.env.AUTH_SECRET,
   providers: [
     GitHub({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
     }),
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
+    // Google({
+    //   clientId: process.env.GOOGLE_CLIENT_ID,
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    // }),
   ],
   pages: {
     signIn: '/auth/signin',
@@ -36,7 +37,7 @@ export const {
       return true
     },
     async session({ session, token }) {
-      if (token && session) {
+      if (token && token.sub) {
         session.user.id = token.sub
       }
       return session

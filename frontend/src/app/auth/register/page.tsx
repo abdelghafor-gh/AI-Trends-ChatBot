@@ -1,45 +1,55 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { signIn } from 'next-auth/react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-export default function SignInPage() {
+export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const searchParams = useSearchParams()
-
-  useEffect(() => {
-    if (searchParams?.get('registered')) {
-      setSuccess('Account created successfully! Please sign in.')
-    }
-  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
     try {
-      setLoading(true)
       setError('')
+      setLoading(true)
 
-      const result = await signIn('credentials', {
-        redirect: false,
-        email,
-        password,
-      })
-
-      if (result?.error) {
-        setError('Invalid credentials')
+      if (password !== confirmPassword) {
+        setError('Passwords do not match')
         return
       }
 
-      router.push('/dashboard')
-    } catch (error) {
-      setError('An error occurred during sign in')
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters long')
+        return
+      }
+
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Something went wrong')
+      }
+
+      // Redirect to sign in page after successful registration
+      router.push('/auth/signin?registered=true')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to register')
     } finally {
       setLoading(false)
     }
@@ -50,22 +60,16 @@ export default function SignInPage() {
       <div className="w-full max-w-md space-y-8 p-8 bg-white dark:bg-gray-900 rounded-xl shadow-lg">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Welcome Back
+            Create Account
           </h1>
           <p className="text-gray-600 dark:text-gray-300">
-            Sign in to continue to AI Trends ChatBot
+            Join AI Trends ChatBot today
           </p>
         </div>
 
         {error && (
           <div className="bg-red-50 dark:bg-red-900/50 text-red-500 dark:text-red-200 p-3 rounded-md text-sm">
             {error}
-          </div>
-        )}
-
-        {success && (
-          <div className="bg-green-50 dark:bg-green-900/50 text-green-500 dark:text-green-200 p-3 rounded-md text-sm">
-            {success}
           </div>
         )}
 
@@ -100,25 +104,41 @@ export default function SignInPage() {
                 className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
                 disabled={loading}
               />
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Must be at least 6 characters long
+              </p>
+            </div>
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                disabled={loading}
+              />
             </div>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
-
-          <div className="text-sm text-center">
-            <Link href="/auth/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-              Don't have an account? Sign up
-            </Link>
-          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Creating account...' : 'Register'}
+          </button>
         </form>
+
+        <div className="text-sm text-center">
+          <Link href="/auth/signin" className="font-medium text-indigo-600 hover:text-indigo-500">
+            Already have an account? Sign in
+          </Link>
+        </div>
       </div>
     </main>
   )
