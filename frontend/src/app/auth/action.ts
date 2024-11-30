@@ -31,6 +31,11 @@ export async function signup(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
   const confirmPassword = formData.get('confirmPassword') as string
+  const username = formData.get('username') as string
+
+  if (!username?.trim()) {
+    redirect('/auth/register?message=Username is required')
+  }
 
   if (password !== confirmPassword) {
     redirect('/auth/register?message=Passwords do not match')
@@ -45,10 +50,18 @@ export async function signup(formData: FormData) {
     password,
     options: {
       emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      data: {
+        name: username,
+        display_name: username,
+      }
     },
   })
 
   if (error) {
+    // Handle specific error for duplicate email from Supabase
+    if (error.message.toLowerCase().includes('email already registered')) {
+      redirect('/auth/register?message=Email already registered. Please use a different email or sign in.')
+    }
     redirect('/auth/register?message=' + error.message)
   }
 

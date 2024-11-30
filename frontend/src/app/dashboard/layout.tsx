@@ -1,8 +1,8 @@
-'use client'
-
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { Bell, MessageSquare, TrendingUp } from 'lucide-react'
+import { UserNav } from '@/components/UserNav'
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 
 const navigation = [
   { name: 'Latest News', href: '/dashboard', icon: Bell },
@@ -10,12 +10,18 @@ const navigation = [
   { name: 'Insights', href: '/dashboard/insights', icon: TrendingUp },
 ]
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const pathname = usePathname()
+  // Check if user is authenticated
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+
+  if (!session) {
+    redirect('/auth/login')
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -30,20 +36,12 @@ export default function DashboardLayout({
               </div>
               <div className="ml-6 flex space-x-8">
                 {navigation.map((item) => {
-                  const isActive = 
-                    (item.href === '/dashboard' && pathname === '/dashboard') ||
-                    (item.href !== '/dashboard' && pathname.startsWith(item.href))
                   const Icon = item.icon
-                  
                   return (
                     <Link
                       key={item.name}
                       href={item.href}
-                      className={`inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium ${
-                        isActive
-                          ? 'border-indigo-500 text-gray-900 dark:text-white'
-                          : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-200'
-                      }`}
+                      className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-200 focus:outline-none border-b-2 border-transparent hover:border-blue-500 dark:hover:border-blue-400"
                     >
                       <Icon className="mr-2 h-4 w-4" />
                       {item.name}
@@ -52,6 +50,8 @@ export default function DashboardLayout({
                 })}
               </div>
             </div>
+
+            <UserNav />
           </div>
         </div>
       </nav>
