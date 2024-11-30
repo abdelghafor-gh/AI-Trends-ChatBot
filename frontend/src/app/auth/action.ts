@@ -18,7 +18,7 @@ export async function emailLogin(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data)
 
   if (error) {
-    redirect('/login?message=Could not authenticate')
+    redirect('/auth/login?message=Could not authenticate')
   }
 
   revalidatePath('/', 'layout')
@@ -52,13 +52,13 @@ export async function signup(formData: FormData) {
     redirect('/auth/register?message=' + error.message)
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/auth/login?message=Check your email to confirm your account')
+  // Redirect to email confirmation page
+  redirect(`/auth/confirm-email?email=${encodeURIComponent(email)}`)
 }
 
 export async function signOut() {
   const supabase = await createClient()
   await supabase.auth.signOut()
   revalidatePath('/', 'layout')
-  redirect('/auth/login')
+  redirect('/')
 }

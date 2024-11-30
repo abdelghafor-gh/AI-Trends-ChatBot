@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Send, Loader2, Plus, Trash } from 'lucide-react'
+import { Send, Loader2, Plus, Trash, Menu } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useChatStore } from '@/lib/store'
 import { api } from '@/lib/api'
@@ -19,6 +19,7 @@ export default function ChatInterface() {
 
   const [inputText, setInputText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   // Get current conversation
   const currentConversation = conversations.find(
@@ -31,6 +32,23 @@ export default function ChatInterface() {
       createConversation()
     }
   }, [conversations.length, createConversation])
+
+  // Close sidebar on mobile when window width is less than 768px
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsSidebarOpen(false)
+      } else {
+        setIsSidebarOpen(true)
+      }
+    }
+
+    // Initial check
+    handleResize()
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const handleSendMessage = async (e?: React.FormEvent) => {
     e?.preventDefault()
@@ -81,11 +99,27 @@ export default function ChatInterface() {
 
   return (
     <div className="flex h-full overflow-hidden">
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        className="md:hidden fixed top-16 left-4 z-50 p-2 bg-white dark:bg-gray-800 rounded-md shadow-lg"
+      >
+        <Menu className="w-5 h-5" />
+      </button>
+
       {/* Sidebar */}
-      <div className="w-64 bg-gray-50 border-r dark:bg-gray-900 dark:border-gray-800 flex flex-col">
+      <div
+        className={cn(
+          "fixed md:relative w-64 bg-gray-50 border-r dark:bg-gray-900 dark:border-gray-800 flex flex-col h-full transition-transform duration-300 ease-in-out z-40",
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        )}
+      >
         <div className="p-4 border-b dark:border-gray-800">
           <button
-            onClick={() => createConversation()}
+            onClick={() => {
+              createConversation()
+              if (window.innerWidth < 768) setIsSidebarOpen(false)
+            }}
             className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
           >
             <Plus className="w-4 h-4" />
@@ -102,11 +136,14 @@ export default function ChatInterface() {
                 currentConversationId === conv.id &&
                   'bg-gray-100 dark:bg-gray-800'
               )}
-              onClick={() => setCurrentConversation(conv.id)}
+              onClick={() => {
+                setCurrentConversation(conv.id)
+                if (window.innerWidth < 768) setIsSidebarOpen(false)
+              }}
             >
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium truncate">
-                  {conv.title}
+                  {conv.title || 'New Chat'}
                 </span>
                 <button
                   onClick={(e) => {
@@ -126,8 +163,16 @@ export default function ChatInterface() {
         </div>
       </div>
 
+      {/* Overlay for mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/20 z-30 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col bg-white dark:bg-gray-950 overflow-hidden">
+      <div className="flex-1 flex flex-col bg-white dark:bg-gray-950 overflow-hidden relative">
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-3xl mx-auto p-4 space-y-4">
             {currentConversation?.messages.map((message) => (
