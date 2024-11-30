@@ -1,46 +1,48 @@
-import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import prisma from '@/lib/prisma';
+import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export async function POST(req: Request) {
   try {
-    const { email, password } = await req.json();
+    const { email, password } = await req.json()
 
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (existingUser) {
+    // Validate input
+    if (!email || !password) {
       return NextResponse.json(
-        { error: 'User already exists' },
+        { error: 'Email and password are required' },
         { status: 400 }
-      );
+      )
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Register user with Supabase
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    })
 
-    // Create user
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
+    if (error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 400 }
+      )
+    }
+
+    return NextResponse.json(
+      { 
+        message: 'Registration successful',
+        user: data.user 
       },
-    });
-
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user;
-
-    return NextResponse.json(
-      { user: userWithoutPassword, message: 'User created successfully' },
       { status: 201 }
-    );
+    )
+
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('Registration error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'An error occurred during registration' },
       { status: 500 }
-    );
+    )
   }
 }

@@ -1,59 +1,87 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/auth'
+import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 
+// Get a specific conversation
 export async function GET(
-  request: Request,
+  req: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const session = await getServerSession()
+
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
     }
 
     const conversation = await prisma.conversation.findUnique({
-      where: { 
+      where: {
         id: params.id,
-        userId: session.user.id,
+        user: {
+          email: session.user.email
+        }
       },
-      include: { messages: true },
+      include: {
+        messages: {
+          orderBy: {
+            createdAt: 'asc'
+          }
+        }
+      }
     })
 
     if (!conversation) {
-      return NextResponse.json({ error: 'Conversation not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'Conversation not found' },
+        { status: 404 }
+      )
     }
 
     return NextResponse.json(conversation)
   } catch (error) {
+    console.error('Error fetching conversation:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch conversation' },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }
 }
 
+// Delete a conversation
 export async function DELETE(
-  request: Request,
+  req: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const session = await getServerSession()
+
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
     }
 
-    await prisma.conversation.delete({
-      where: { 
+    const conversation = await prisma.conversation.delete({
+      where: {
         id: params.id,
-        userId: session.user.id,
-      },
+        user: {
+          email: session.user.email
+        }
+      }
     })
 
-    return NextResponse.json({ success: true })
-  } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to delete conversation' },
+      { message: 'Conversation deleted successfully' },
+      { status: 200 }
+    )
+  } catch (error) {
+    console.error('Error deleting conversation:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }
