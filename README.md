@@ -18,6 +18,7 @@
 - [Getting Started](#-getting-started)
 - [Environment Setup](#-environment-setup)
 - [Contributing](#-contributing)
+- [RSS Feed Sources](#-rss-feed-sources)
 
 ## 🎯 Overview
 
@@ -171,6 +172,82 @@ NEXT_PUBLIC_SITE_URL=your_site_url
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+## 📰 RSS Feed Sources
+
+> Comprehensive list of AI news and research sources for data collection
+
+### 🎯 Major Tech Companies
+- **[Google DeepMind](https://deepmind.google/discover/blog/)**
+  - RSS: [`deepmind.google/blog/rss.xml`](https://deepmind.google/blog/rss.xml)
+- **[Microsoft Research](https://www.microsoft.com/en-us/research/)**
+  - RSS: [`microsoft.com/en-us/research/feed`](https://www.microsoft.com/en-us/research/feed/)
+- **[Amazon Science](https://www.amazon.science/)**
+  - RSS: [`amazon.science/index.rss`](https://www.amazon.science/index.rss)
+- **[Google Research](https://research.google/blog/)**
+  - Blog URL: [`research.google/blog`](https://research.google/blog/)
+
+### 🎓 Academic & Research
+- **[MIT News - Artificial Intelligence](https://news.mit.edu/topic/artificial-intelligence2)**
+  - RSS: [`news.mit.edu/topic/mitartificial-intelligence2-rss.xml`](https://news.mit.edu/topic/mitartificial-intelligence2-rss.xml)
+- **[IEEE Spectrum - AI](https://spectrum.ieee.org/)**
+  - RSS: [`spectrum.ieee.org/feeds/topic/artificial-intelligence.rss`](https://spectrum.ieee.org/feeds/topic/artificial-intelligence.rss)
+
+### 📱 Tech News & Media
+- **[TechCrunch - AI](https://techcrunch.com/category/artificial-intelligence/)**
+  - RSS: [`techcrunch.com/category/artificial-intelligence/feed`](https://techcrunch.com/category/artificial-intelligence/feed/)
+- **[The Guardian - AI](https://www.theguardian.com/technology/artificialintelligenceai)**
+  - RSS: [`theguardian.com/technology/artificialintelligenceai/rss`](https://www.theguardian.com/technology/artificialintelligenceai/rss)
+- **[The Verge - AI](https://www.theverge.com/ai-artificial-intelligence)**
+  - RSS: [`theverge.com/ai-artificial-intelligence/rss/index.xml`](https://www.theverge.com/ai-artificial-intelligence/rss/index.xml)
+- **[VentureBeat - AI](https://venturebeat.com/category/ai/)**
+  - RSS: [`venturebeat.com/category/ai/feed`](https://venturebeat.com/category/ai/feed/)
+- **[Ars Technica - AI](https://arstechnica.com/ai/)**
+  - Tech RSS: [`feeds.arstechnica.com/arstechnica/technology-lab`](https://feeds.arstechnica.com/arstechnica/technology-lab)
+- **[SiliconANGLE - AI](https://siliconangle.com/category/ai/)**
+  - RSS: [`siliconangle.com/category/ai/feed`](https://siliconangle.com/category/ai/feed/)
+
+### 💡 AI Specialized
+- **[AI Business](https://aibusiness.com/)**
+  - RSS: [`aibusiness.com/rss.xml`](https://aibusiness.com/rss.xml)
+- **[Last Week in AI](https://lastweekin.ai/)**
+  - RSS: [`lastweekin.ai/feed`](https://lastweekin.ai/feed)
+- **[Analytics India Magazine](https://analyticsindiamag.com/)**
+  - RSS: [`analyticsindiamag.com/feed`](https://analyticsindiamag.com/feed/)
+- **[AI News](https://www.artificialintelligence-news.com/)**
+  - RSS: [`artificialintelligence-news.com/feed`](https://www.artificialintelligence-news.com/feed/)
+- **[Unite.AI](https://www.unite.ai/)**
+  - RSS: [`unite.ai/feed`](https://www.unite.ai/feed/)
+- **[Import AI](https://jack-clark.net/)**
+  - RSS: [`jack-clark.net/feed`](https://jack-clark.net/feed/)
+- **[MarkTechPost](https://www.marktechpost.com/)**
+  - RSS: [`marktechpost.com/feed`](https://www.marktechpost.com/feed/)
+- **[Synced](https://syncedreview.com/)**
+  - RSS: [`syncedreview.com/feed`](https://syncedreview.com/feed/)
+
+### 🔬 Technical & Developer
+- **[InfoQ - AI/ML](https://www.infoq.com/ai-ml-data-eng/)**
+  - RSS: [`feed.infoq.com/ai-ml-data-eng`](https://feed.infoq.com/ai-ml-data-eng/)
+- **[HackerNoon - AI](https://hackernoon.com/tagged/ai)**
+  - RSS: [`hackernoon.com/tagged/ai/feed`](https://hackernoon.com/tagged/ai/feed)
+- **[TechXplore - AI/ML](https://techxplore.com/machine-learning-ai-news/)**
+  - RSS: [`techxplore.com/rss-feed/machine-learning-ai-news`](https://techxplore.com/rss-feed/machine-learning-ai-news/)
+- **[The Register - AI/ML](https://www.theregister.com/software/ai_ml/)**
+  - RSS: [`theregister.com/software/ai_ml/headlines.atom`](https://www.theregister.com/software/ai_ml/headlines.atom)
+
+### 📊 Data Science & Industry
+- **[Dataconomy - AI](https://dataconomy.com/category/topics/data-science/artificial-intelligence/)**
+  - RSS: [`dataconomy.com/category/topics/data-science/artificial-intelligence/feed`](https://dataconomy.com/category/topics/data-science/artificial-intelligence/feed/)
+- **[AI Accelerator Institute](https://www.aiacceleratorinstitute.com/)**
+  - RSS: [`aiacceleratorinstitute.com/rss`](https://www.aiacceleratorinstitute.com/rss/)
+- **[AI Hub News](https://aihub.org/category/news/)**
+  - RSS: [`aihub.org/category/news/feed`](https://aihub.org/category/news/feed/)
+- **[AI Tech Park](https://ai-techpark.com/ai/)**
+  - RSS: [`ai-techpark.com/feed`](https://ai-techpark.com/feed/)
+
+### 🤖 Community & Forums
+- **[Reddit - Machine Learning News](https://www.reddit.com/r/machinelearningnews/)**
+  - API: [`reddit.com/r/machinelearningnews.json?limit=50`](https://www.reddit.com/r/machinelearningnews.json?limit=50)
 
 ---
 
