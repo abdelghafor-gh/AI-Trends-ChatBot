@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { Send, Loader2, Plus, Trash, Menu } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useChatStore } from '@/lib/store'
+import { useChatStore, Message } from '@/lib/store'
 import { api } from '@/lib/api'
 import { format } from 'date-fns'
 
@@ -50,48 +50,60 @@ export default function ChatInterface() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  const handleSendMessage = async (e?: React.FormEvent) => {
-    e?.preventDefault()
-    
-    if (!inputText.trim() || isLoading || !currentConversationId) return
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!inputText.trim() || isLoading) return
 
-    const userMessage = {
-      id: Date.now(),
-      text: inputText.trim(),
-      sender: 'user' as const,
-      timestamp: new Date(),
-    }
-
-    // Add user message to conversation
-    addMessage(currentConversationId, userMessage)
-    setInputText('')
     setIsLoading(true)
 
     try {
-      // Send message to API
+      // Create a new conversation if none exists
+      if (!currentConversationId) {
+        const result = await api.chat.createConversation()
+        if (result.error) throw new Error(result.error)
+        if (result.data) {
+          setCurrentConversation(result.data.id)
+        }
+      }
+
+      // Add user message to the conversation
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        content: inputText,
+        role: 'user',
+        timestamp: new Date(),
+      }
+      
+      addMessage(currentConversationId!, userMessage)
+      setInputText('')
+
+      // Send message to API and get response
       const response = await api.chat.sendMessage(inputText)
-
-      if (response.error) throw new Error(response.error)
-
-      // Add bot response to conversation
-      const botMessage = {
-        id: Date.now() + 1,
-        text: response.data?.response || 'Sorry, I could not process your message.',
-        sender: 'bot' as const,
-        timestamp: new Date(),
+      
+      if (response.error) {
+        throw new Error(response.error)
       }
 
-      addMessage(currentConversationId, botMessage)
+      // Add AI response to the conversation
+      if (response.data) {
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          content: response.data.response,
+          role: 'assistant',
+          timestamp: new Date(),
+        }
+        addMessage(currentConversationId!, aiMessage)
+      }
     } catch (error) {
-      console.error('Error sending message:', error)
-      // Add error message to conversation
-      const errorMessage = {
-        id: Date.now() + 1,
-        text: 'Sorry, there was an error processing your message. Please try again.',
-        sender: 'bot' as const,
+      console.error('Error:', error)
+      // Optionally add error message to conversation
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: error instanceof Error ? error.message : 'An error occurred',
+        role: 'assistant',
         timestamp: new Date(),
       }
-      addMessage(currentConversationId, errorMessage)
+      addMessage(currentConversationId!, errorMessage)
     } finally {
       setIsLoading(false)
     }
@@ -179,18 +191,18 @@ export default function ChatInterface() {
               <div
                 key={message.id}
                 className={cn('flex', {
-                  'justify-end': message.sender === 'user',
-                  'justify-start': message.sender === 'bot',
+                  'justify-end': message.role === 'user',
+                  'justify-start': message.role === 'assistant',
                 })}
               >
                 <div
                   className={cn('max-w-[70%] rounded-lg p-3', {
-                    'bg-primary text-white': message.sender === 'user',
+                    'bg-primary text-white': message.role === 'user',
                     'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100':
-                      message.sender === 'bot',
+                      message.role === 'assistant',
                   })}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.text}</p>
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                   <span className="text-xs mt-1 opacity-70 block">
                     {format(new Date(message.timestamp), 'HH:mm')}
                   </span>
@@ -203,7 +215,7 @@ export default function ChatInterface() {
         <div className="border-t dark:border-gray-800 bg-white dark:bg-gray-950">
           <div className="max-w-3xl mx-auto p-4">
             <form
-              onSubmit={handleSendMessage}
+              onSubmit={handleSubmit}
               className="flex items-center space-x-2"
             >
               <input

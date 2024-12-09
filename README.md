@@ -19,6 +19,7 @@
 - [Environment Setup](#-environment-setup)
 - [Contributing](#-contributing)
 - [RSS Feed Sources](#-rss-feed-sources)
+- [Virtual Environment Setup](#-virtual-environment-setup)
 
 ## 🎯 Overview
 
@@ -248,6 +249,56 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 ### 🤖 Community & Forums
 - **[Reddit - Machine Learning News](https://www.reddit.com/r/machinelearningnews/)**
   - API: [`reddit.com/r/machinelearningnews.json?limit=50`](https://www.reddit.com/r/machinelearningnews.json?limit=50)
+
+## 📚 Virtual Environment Setup
+
+### Prerequisites
+- Python 3.9+
+- pip
+- virtualenv (optional but recommended)
+
+### Setup for Each Component
+
+#### RSS Scrapers
+```bash
+cd rss-scrapers
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+#### Data Pipeline
+```bash
+cd azure-data-pipeline
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+#### Chatbot
+```bash
+cd chatbot
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### Deactivating Virtual Environments
+```bash
+deactivate
+```
+
+## Development Workflow
+1. Create virtual environment
+2. Activate environment
+3. Install dependencies
+4. Work on your component
+5. Deactivate when done
+
+## Notes
+- Each component has its own isolated environment
+- Specific package versions ensure consistency
+- Easy to manage dependencies per module
 
 ---
 

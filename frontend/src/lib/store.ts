@@ -2,9 +2,9 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 export interface Message {
-  id: number
-  text: string
-  sender: 'user' | 'bot'
+  id: string
+  content: string
+  role: 'user' | 'assistant'
   timestamp: Date
 }
 

@@ -1,0 +1,44 @@
+# Temporary ignored folders
+infrastructure/
+azure-data-pipeline/
+
+# Python
+__pycache__/
+*.py[cod]
+.Python
+.venv/
+.env
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfvars
+
+# Data and Temporary Files
+data/
+data/raw/
+data/processed/
+*.json
+*.log
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*~
+
+# Secrets and Credentials
+*.credentials
+secrets.py
+azure_credentials.json
+
+# Environment and Dependency Files
+.env
+requirements.txt.lock
+
+# Databricks
+*.dbc
+
+# OS Generated Files
+.DS_Store
+Thumbs.db

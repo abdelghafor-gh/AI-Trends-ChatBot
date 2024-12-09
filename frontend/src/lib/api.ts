@@ -1,6 +1,6 @@
 import { Message, Conversation } from './store'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
 export interface ApiResponse<T> {
   data?: T
@@ -103,7 +103,11 @@ class ChatAPI {
         body: JSON.stringify({ message }),
       })
       
-      if (!response.ok) throw new Error('Failed to send message')
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to send message');
+      }
+      
       const data = await response.json()
       return { data }
     } catch (error) {
