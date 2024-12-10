@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'frontend/**'
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
@@ -41,8 +43,8 @@ jobs:
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "./frontend" # App source code path
-          api_location: "" # Api source code path - optional
-          output_location: "" # Built app content directory - optional
+          api_location: "./frontend/src/app/api" # Api source code path - optional
+          output_location: ".next" # Built app content directory - optional
           github_id_token: ${{ steps.idtoken.outputs.result }}
           ###### End of Repository/Build Configurations ######
 
