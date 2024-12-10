@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 
 // Get all conversations for the current user
 export async function GET() {
   try {
-    const session = await getServerSession()
+    const supabase = await createClient()
+    const { data: { session } } = await supabase.auth.getSession()
 
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -23,7 +24,7 @@ export async function GET() {
       include: {
         messages: {
           orderBy: {
-            createdAt: 'asc'
+            timestamp: 'asc'
           }
         }
       },
@@ -45,7 +46,8 @@ export async function GET() {
 // Create a new conversation
 export async function POST(req: Request) {
   try {
-    const session = await getServerSession()
+    const supabase = await createClient()
+    const { data: { session } } = await supabase.auth.getSession()
 
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -56,28 +58,18 @@ export async function POST(req: Request) {
 
     const { title } = await req.json()
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
-    })
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      )
-    }
-
     const conversation = await prisma.conversation.create({
       data: {
         title,
-        userId: user.id
-      },
-      include: {
-        messages: true
+        user: {
+          connect: {
+            email: session.user.email
+          }
+        }
       }
     })
 
-    return NextResponse.json(conversation, { status: 201 })
+    return NextResponse.json(conversation)
   } catch (error) {
     console.error('Error creating conversation:', error)
     return NextResponse.json(

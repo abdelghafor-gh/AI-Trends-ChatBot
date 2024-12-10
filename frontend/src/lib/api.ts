@@ -1,6 +1,7 @@
 import { Message, Conversation } from './store'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const FASTAPI_BASE_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://localhost:9000'
 
 export interface ApiResponse<T> {
   data?: T
@@ -38,6 +39,7 @@ export interface WeeklySummary {
 
 class ChatAPI {
   private baseUrl = API_BASE_URL
+  private fastapiUrl = FASTAPI_BASE_URL
 
   async getConversations(): Promise<ApiResponse<Conversation[]>> {
     const response = await fetch(`${this.baseUrl}/conversations`)
@@ -95,7 +97,7 @@ class ChatAPI {
 
   async sendMessage(message: string): Promise<ApiResponse<{ response: string }>> {
     try {
-      const response = await fetch(`${this.baseUrl}/chat`, {
+      const response = await fetch(`${this.fastapiUrl}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

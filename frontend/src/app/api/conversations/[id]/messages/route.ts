@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 
 // Add a new message to a conversation
@@ -8,7 +8,8 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession()
+    const supabase = await createClient()
+    const { data: { session } } = await supabase.auth.getSession()
 
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -66,7 +67,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession()
+    const supabase = await createClient()
+    const { data: { session } } = await supabase.auth.getSession()
 
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -85,7 +87,7 @@ export async function GET(
         }
       },
       orderBy: {
-        createdAt: 'asc'
+        timestamp: 'asc'
       }
     })
 
