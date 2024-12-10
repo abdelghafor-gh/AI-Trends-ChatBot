@@ -42,3 +42,7 @@ requirements.txt.lock
 # OS Generated Files
 .DS_Store
 Thumbs.db
+
+# Untracked Files
+Report.pdf
+rss-scrapers/
