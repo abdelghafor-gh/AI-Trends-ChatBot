@@ -49,6 +49,7 @@ jobs:
       - name: Setup Prisma and Run Migrations
         run: |
           cd frontend
+          rm -rf node_modules/.prisma
           npx prisma generate
           npx prisma migrate deploy
       - name: Build And Deploy
