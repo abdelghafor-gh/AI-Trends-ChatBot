@@ -40,7 +40,6 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ !contains(github.event.head_commit.message, '[skip backend]') }}
     needs: build
     
     steps:
@@ -55,4 +54,7 @@ jobs:
           containerAppName: ai-trends-chatbot
           resourceGroup: ${{ secrets.RESOURCE_GROUP }}
           imageToDeploy: ${{ secrets.REGISTRY_LOGIN_SERVER }}/ai-trends-chatbot:${{ github.sha }}
+          registryUrl: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          registryUsername: ${{ secrets.REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.REGISTRY_PASSWORD }}
           targetPort: 9000
