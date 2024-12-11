@@ -5,6 +5,7 @@ azure-data-pipeline/
 # critically important files
 user-cred.json
 cred.json
+microsoft
 
 # Python
 __pycache__/
