@@ -58,3 +58,6 @@ jobs:
           registryUsername: ${{ secrets.REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.REGISTRY_PASSWORD }}
           targetPort: 9000
+          environmentVariables: |
+            PINECONE_API_KEY=${{ secrets.PINECONE_API_KEY }}
+            CO_API_KEY=${{ secrets.CO_API_KEY }}

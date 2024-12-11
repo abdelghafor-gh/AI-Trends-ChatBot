@@ -23,6 +23,8 @@ jobs:
       DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      NEXT_PUBLIC_FASTAPI_URL: ${{ secrets.NEXT_PUBLIC_FASTAPI_URL }}
+
     steps:
       - uses: actions/checkout@v3
         with:
