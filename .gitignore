@@ -2,6 +2,10 @@
 infrastructure/
 azure-data-pipeline/
 
+# critically important files
+user-cred.json
+cred.json
+
 # Python
 __pycache__/
 *.py[cod]
