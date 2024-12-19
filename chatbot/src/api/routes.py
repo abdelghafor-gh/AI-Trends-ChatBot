@@ -67,6 +67,7 @@ async def chat_endpoint(request: ChatRequest):
     description="Simple endpoint to check if the API is up and running",
     response_description="Returns the current health status of the API"
 )
+
 async def health_check():
     """
     Check if the API is healthy and operational.

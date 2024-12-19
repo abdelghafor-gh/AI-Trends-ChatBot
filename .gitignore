@@ -1,6 +1,7 @@
 # Temporary ignored folders
 infrastructure/
 azure-data-pipeline/
+test/.rss
 
 # critically important files
 user-cred.json

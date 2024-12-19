@@ -1,0 +1,837 @@
+,guid,title,link,pub_date,description,content
+0,https://www.amazon.science/blog/understanding-the-training-dynamics-of-transformers,Understanding the training dynamics of transformers,https://www.amazon.science/blog/understanding-the-training-dynamics-of-transformers,"Wed, 18 Dec 2024 20:11:08 GMT","Theoretical analysis provides insight into the optimization process during model training and reveals that for some optimizations, the Gaussian attention kernel may work better than softmax.","
+
+
+
+
+
+
+Conference
+
+
+
+NeurIPS 2024
+
+
+
+
+
+
+
+Related publications
+
+
+
+Unraveling the gradient descent dynamics of transformers
+
+
+
+
+
+
+
+
+
+Most of today’s breakthrough AI models are based on the transformer architecture, which is distinguished by its use of an attention mechanism. In a large language model (LLM), for instance, the transformer decides which words in the text string to pay particular attention to when generating the next word; in a vision-language model, it might decide which words of an instruction to attend to when computing pixel values.Given the increasing importance of transformer models, we naturally want to better understand their dynamics — whether the training process will converge on a useful model, for instance, and how fast, or which architectural variations work best for what purposes. The complexity of the attention mechanism, however, makes traditional analytic tools difficult to apply.Last week, at the 2024 Conference on Neural Information Processing Systems (NeurIPS), we presented a new analysis of the transformer architecture. First, we identified hyperparameters and initialization conditions that provide a probabilistic guarantee of convergence to a globally optimal solution.Through ablation studies, we also showed that the choice of attention kernel — the function used to compute the attention weights — influences the convergence rate. Specifically, the Gaussian kernel will sometimes enable convergence when the more common softmax kernel will not. Finally, we conducted an empirical study that showed that, in some specific settings, models trained using the Gaussian kernel converged more rapidly than models trained using the softmax kernel, due to a smoother optimization landscape.
+
+
+
+
+
+
+The optimization landscapes of both the Gaussian kernel and the softmax kernel for two different machine learning tasks. Because of their smoother optimization landscapes, models trained using the Gaussian kernel converged more rapidly than models trained using the softmax kernel.
+
+A tale of three matricesIn a transformer, the attention weight computation involves three matrices: the query matrix, the key matrix, and the value matrix. All three are used to produce encodings of input data. In a self-attention mechanism, which compares an input to itself (as in the case of LLMs), the query and key matrices are applied to the same input. In a cross-attention mechanism, they’re applied to different inputs: in a multimedia model, for instance, one matrix may be used to encode texts, while the other is used to encode images.The attention kernel defines an operation performed on the query and key encodings; the result of the operation indicates the relevance of one of set of inputs to another (or to itself). The encoding produced by the value matrix represents semantic properties of the data. The result of the kernel operation is multiplied by the encodings produced by the value matrix, emphasizing some semantic features and deemphasizing others. The result is, essentially, a recipe for the semantic content of the model’s next output.Typically, during model training, all three matrices are updated together. But we analyzed the results of updating only subsets of the matrices while the others remain fixed. This enabled us to identify which matrices and kernel functions exert the largest influence on convergence rate. The results were as follows:If all three matrices can be updated, ordinary gradient descent (GD) can achieve global optimality, with either Gaussian or softmax attention kernels;If only the value matrix can be updated, GD is still optimal, with either kernel;If only the query matrix can be updated, GD convergence is guaranteed only with the Gaussian kernel.This suggests that in some cases, the commonly used softmax kernel may have drawbacks, and we conducted a set of experiments that bear that intuition out. On two different datasets — one for a text classification task and one for an image interpretation and segmentation task — we trained pairs of transformer models, one with a Gaussian kernel and one with a softmax kernel. On both tasks, the Gaussian kernel enabled faster convergence rates and higher accuracy in the resulting model.
+
+
+
+
+
+
+Results of experiments on a text classification task (top) and an image interpretation and segmentation task (bottom). Results with the Gaussian kernel are in blue, results with the softmax kernel in red. In the accuracy measurements (left), higher scores are better; in the training loss measurements (right), lower scores are better.
+
+Our analysis also indicates that, theoretically, convergence depends centrally on updates to the value matrix, since the multiplication of the value matrix and the results of the kernel operation is a linear operation, whereas the kernel operation is nonlinear.Finally, our paper also sets out a group of initialization conditions that are necessary to guarantee convergence. These include the requirements that the matrix of the kernel operations have full rank — that is, that its columns are linearly independent — and that the ratio of the query and key matrices’ eigenvalues to the value matrix’s eigenvalue fall above a specified threshold.Further details can be found in our paper. We hope that other members of the AI community will expand on our analyses, expanding our understanding of transformers as they play a larger and larger role in our everyday lives.
+
+
+"
+1,https://www.amazon.science/blog/economics-nobelist-on-causal-inference,Economics Nobelist on causal inference,https://www.amazon.science/blog/economics-nobelist-on-causal-inference,"Mon, 16 Dec 2024 16:04:23 GMT","In a keynote address at the latest Amazon Machine Learning Conference, Amazon academic research consultant, Stanford professor, and recent Nobel laureate Guido Imbens offered insights on the estimation of causal effects in &#8220;panel data&#8221; settings.","
+
+
+Since 2013, Amazon has held an annual internal conference, the Amazon Machine Learning Conference (AMLC), where machine learning practitioners from around the company come together to share their work, teach and learn new techniques, and discuss best practices.At the third AMLC, in 2015, Guido Imbens, a professor of economics at the Stanford University Graduate School of Business, gave a popular tutorial on causality and machine learning. Nine years and one Nobel Prize for economics later, Imbens — now in his tenth year as an Amazon academic research consultant — was one of the keynote speakers at the 2024 AMLC, held in October.
+
+
+
+
+
+
+Guido Imbens, Nobel laureate, professor of economics at the Stanford University Graduate School of Business, and an Amazon academic research consultant for the past 10 years.
+
+In his talk, Imbens discussed causal inference, a mainstay of his research for more than 30 years and the topic that the Nobel committee highlighted in its prize citation. In particular, he considered so-called panel data, in which multiple units — say, products, customers, or geographic regions — and outcomes — say, sales or clicks — are observed at discrete points in time.Over particular time spans, some units receive a treatment — say, a special product promotion or new environmental regulation — whose effects are reflected in the outcome measurements. Causal inference is the process of determining how much of the change in outcomes over time can be attributed to the treatment. This means adjusting for spurious correlations that result from general trends in the data, which can be inferred from trends among the untreated (control) units.Imbens began by discussing the value of his work at Amazon. “I started working with people here at Amazon in 2014, and it's been a real pleasure and a real source of inspiration for my research, interacting with the people here and seeing what kind of problems they're working on, what kind of questions they have,” he said. “I've always found it very useful in my econometric, in my statistics, in my methodological research to talk to people who are using these methods in practice, who are actually working with these things on the ground. So it's been a real privilege for the last 10 years doing that with the people here at Amazon.”Panel dataThen, with no further ado, he launched into the substance of his talk. Panel data, he explained, is generally represented by a pair of matrices, whose rows represents units and whose columns represent points in time. In one matrix, the entries represent measurements made on particular units at particular times; the other matrix takes only binary values, which represent whether a given unit was subject to treatment during the corresponding time span.
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+A conversation with economics Nobelists
+Amazon Scholar David Card and Amazon academic research consultant Guido Imbens talk about the past and future of empirical economics.
+
+
+
+
+
+
+Ideally, for a given unit and a given time span, we would run an experiment in which the unit went untreated; then we would back time up and run the experiment again, with the treatment. But of course, time can’t be backed up. So instead, for each treated cell in the matrix, we estimate what the relevant measurement would have been if the treatment hadn’t been applied, and we base that estimate on the outcomes for other units and time periods.For ease of explanation, Imbens explained, he considered the case in which only one unit was treated, for only one time interval: “Once I have methods that work effectively for that case, the particular methods I'm going to suggest extend very naturally to the more-general assignment mechanism,” he said. “This is a very common setup.”Control estimatesImbens described five standard methods for estimating what would have been the outcome if a treated unit had been untreated during the same time period. The first method, which is very common in empirical work in economics, is known as known as difference of differences. It involves a regression analysis of all the untreated data up to the treatment period; the regression function can then be used to estimate the outcome for the treated unit if it hadn’t been treated.The second method is called synthetic control, in which a control version of the treated unit is synthesized as a weighted average of the other control units.“One of the canonical examples is one where he [Alberto Abadie, an Amazon Scholar, pioneer of synthetic control, and long-time collaborator of Imbens] is interested in estimating the effect of an anti-smoking regulation in California that went into effect in 1989,” Imbens explained. “So he tries to find the convex combination of the other states such that smoking rates for that convex combination match the actual smoking rates in California prior to 1989 — say, 40% Arizona, 30% Utah, 10% Washington and 20% New York. Once he has those weights, he then estimates the counterfactual smoking rate in California.”
+
+
+
+
+
+
+A synthetic control estimates a counterfactual control for a treated unit by synthesizing outcomes for untreated units. For instance, smoking rates in California might by synthesized as a convex combination of smoking rates in other states.
+
+The third method, which Imbens and a colleague had proposed in 2016, adds an intercept to the synthetic-control equation; that is, it specifies an output value for the function when all the unit measurements are zero.The final two methods were variations on difference of differences that added another term to the function to be optimized: a low-rank matrix, which approximates the results of the outcomes matrix at a lower resolution. The first of these variations — the matrix completion method — simply adds the matrix, with a weighting factor, to the standard difference-of-differences function.
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+Two Amazon-affiliated economists awarded Nobel Prize
+Amazon Scholar David Card wins half the award, while academic research consultant Guido Imbens shares in the other half.
+
+
+
+
+
+
+The second variation — synthetic difference of differences — weights the distances between the unit-time measurements and the regression curve according to the control units’ similarities to the unit that received the intervention.“In the context of the smoking example,” Imbens said, “you assign more weight to units that are similar to California, that match California better. So rather than pretending that Delaware or Alaska is very similar to California — other than in their level — you only put weight on states that are very similar to California.”DrawbacksHaving presented these five methods, Imbens went on to explain what he found wrong with them. The first problem, he said, is that they treat the outcome and treatment matrices as both row (units) and column (points in time) exchangeable. That is, the methods produce the same results whatever the ordering of rows and columns in the matrices.“The unit exchangeability here seems very reasonable,” Imbens said. “We may have some other covariates, but in principle, there's nothing that distinguishes these units or suggests treating them in a way that's different from exchangeable.
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+Amazon at AEA: The crossroads of economics and AI
+Pat Bajari, VP and chief economist for Amazon's Core AI group, on his team's new research and what it says about economists' role at Amazon.
+
+
+
+
+
+
+“But for the time dimension, it's different. You would think that if we're trying to predict outcomes in 2020, having outcomes measured in 2019 is going to be much more useful than having outcomes measured in 1983. We think that there's going to be correlation over time that makes predictions based on values from 2019 much more likely to be accurate than predictions based on values from 1983.”The second problem, Imbens said, is that while the methods work well in the special case he considered, where only a single unit-time pair is treated — and indeed, they work well under any conditions in which the treatment assignments have a clearly discernible structure — they struggle in cases where the treatment assignments are more random. That’s because, with random assignment, units drop in and out of the control group from one time period to the next, making accurate regression analysis difficult.A new estimatorSo Imbens proposed a new estimator, one based on the matrix completion method, but with additional terms that apply two sets of weights to each control unit’s contribution to the regression analysis. The first weight reduces the contribution of a unit measurement according to its distance in time from the measurement of the treated unit — that is, it privileges more recent measurements.
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+The science of price experiments in the Amazon Store
+The requirement that at any given time, all customers see the same prices for the same products necessitates innovation in the design of A/B experiments.
+
+
+
+
+
+
+The second weight reduces the contributions of control unit measurements according to their absolute distance from the measurement of the treated unit. There, the idea is to limit the influence of outliers in sparse datasets — that is, datasets that control units are constantly dropping in and out of.Imbens then compared the performance of his new estimator to those of the other five, on nine existing datasets that had been chosen to test the accuracy of prior estimators. On eight of the nine datasets, Imbens’s estimator outperformed all five of its predecessors, sometimes by a large margin; on the ninth dataset, it finished a close second to the difference-of-differences approach — which, however, was the last-place finisher on several other datasets.
+
+
+
+
+
+
+Root mean squared error of six estimators on nine datasets, normalized to the best-performing dataset. Imbens’s new estimator, the doubly weighted causal panel (DWCP) estimator, outperforms its predecessors, often by a large margin.
+
+“I don't want to push this as a particular estimator that you should use in all settings,” Imbens explained. “I want to mainly show that even simple changes to existing classes of estimators can actually do substantially better than the previous estimators by incorporating the time dimension in a more uh more satisfactory way.”For purposes of causal inference, however, the accuracy of an estimator is not the only consideration. The reliability of the estimator — its power, in the statistical sense — also depends on its variance, the degree to which its margin of error deviates from the mean in particular instances. The lower the variance, the more likely the estimator is to provide accurate estimates.Variance of varianceFor the rest of his talk, Imbens discussed methods of estimating the variance of counterfactual estimators. Here things get a little confusing, because the variance estimators themselves display variance. Imbens advocated the use of conditional variance estimators, which hold some variables fixed — in the case of panel data, unit, time, or both — and estimate the variance of the free variables. Counterintuitively, higher-variance variance estimators, Imbens said, offer more power.
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+Removing selection bias from evaluation of recommendations
+Causal machine learning provides a powerful tool for estimating the effectiveness of Fulfillment by Amazon’s recommendations to selling partners.
+
+
+
+
+
+
+“In general, you should prefer the conditional variance because it adapts more to the particular dataset you're analyzing,” Imbens explained. “It's going to give you more power to find the treatment effects. Whereas the marginal variance” — an alternative and widely used method for estimating variance — “has the lowest variance itself, and it's going to have the lowest power in general for detecting treatment effects.”Imbens then presented some experimental results using synthetic panel data that indicated that, indeed, in cases where data is heteroskedastic — meaning that the variance of one variable increases with increasing values of the other — variance estimators that themselves use conditional variance have greater statistical power than other estimators.“There's clearly more to be done, both in terms of estimation, despite all the work that's been done in the last couple of years in this area, and in terms of variance estimation,” Imbens concluded. “And where I think the future lies for these models is a combination of the outcome modeling by having something flexible in terms of both factor models as well as weights that ensure that you're doing the estimation only locally. And we need to do more on variance estimation, keeping in mind both power and validity, with some key role for modeling some of the heteroskedasticity.”
+
+
+"
+2,https://www.amazon.science/blog/unlocking-insights-from-qualitative-text-with-llm-enhanced-topic-modeling,Unlocking insights from qualitative text with LLM-enhanced topic modeling,https://www.amazon.science/blog/unlocking-insights-from-qualitative-text-with-llm-enhanced-topic-modeling,"Wed, 11 Dec 2024 17:14:56 GMT",LLM-augmented clustering enables QualIT to outperform other topic-modeling methods in both topic coherence and topic diversity.,"
+
+
+Whether collected through employee surveys, product feedback channels, voice-of-customer mechanisms, or other unstructured text sources, qualitative data offers invaluable insights that can complement and contextualize quantitative business intelligence. However, the manual effort required to analyze large volumes of open-ended responses has limited the accessibility of these insights.Topic-modeling approaches like latent Dirichlet allocation (LDA), which cluster documents on the basis of word co-occurrence, can help uncover thematic structures in large text corpora. However, LDA and other standard topic-modeling techniques often struggle to fully capture the contextual nuances and ambiguities inherent in natural language.In a recent paper that we authored with Alex Gil, Anshul Mittal, and Rutu Mulkar, we introduce the Qualitative Insights Tool (QualIT), a novel approach that integrates pretrained large language models (LLMs) with traditional clustering techniques. By leveraging the deep understanding and powerful language generation capabilities of LLMs, QualIT is able to enrich the topic-modeling process, generating more nuanced and interpretable topic representations from free-text data.
+
+
+
+
+
+
+The QualIT framework.
+
+We evaluated QualIT on the 20 Newsgroups dataset, a widely used benchmark for topic-modeling research. Compared to standard LDA and the state-of-the-art BERTopic approach, QualIT demonstrated substantial improvements in both topic coherence (70% vs. 65% and 57% for the benchmarks) and topic diversity (95.5% vs. 85% and 72%).Hierarchical clusteringQualIT doesn't simply rely on the LLM to generate topics and themes. It employs a unique two-stage clustering approach to uncover both high-level topic insights and more granular subtopics. First, the model groups key phrases extracted by the LLM into primary clusters, representing the overarching themes present in the corpus. It then applies a secondary round of clustering within each primary cluster to identify more specific subtopics.The key steps in the QualIT approach areKey-phrase extraction: The LLM analyzes each document, identifying key phrases that capture the most salient themes and topics. This is a crucial advantage over alternative methods that characterize each document according to a single topic. By extracting multiple key phrases per document, QualIT is able to deal with the reality that a single piece of text can encompass a range of interconnected themes and perspectives.Hallucination check: To ensure the reliability of the extracted key phrases, QualIT calculates a coherence score for each one. This score assesses how well the key phrase aligns with the actual text, serving as a metric for consistency and relevance. Key phrases that fall below a certain coherence threshold are flagged for potential ""hallucination"" and removed from the analysis, helping to maintain the quality and trustworthiness of the topic-modeling output.Clustering: The hierarchical structure of the two-phase clustering method provides a comprehensive and interpretable view of the thematic landscape, allowing researchers and decision-makers to navigate from broad, overarching topics down to the more nuanced and detailed aspects of the data. Importantly, QualIT leverages the key phrases as the basis for clustering, rather than directly grouping the full documents. This reduces noise and the influence of irrelevant data, enabling the algorithm to focus on the thematic essence of the text.In addition to comparing QualIT to earlier topic-modeling methods, we also asked human reviewers to validate its output. The reviewers were able to more consistently categorize the topics generated by QualIT into the known ground-truth categories; for example, when at least three out of four evaluators agreed on the topic classification, QualIT achieved a 50% overlap with the ground truth, compared to just 25% for LDA and BERTopic. Interested readers can learn more about the technical implementation in both the QualIT paper and an earlier paper on reconciling methodological paradigms in qualitative research.ApplicationsQualitative text doesn’t just include feedback on surveys or from focus groups; it also includes product interaction data. For example, a system similar to QualIT could analyze the questions asked of an AI chatbot, to understand what topics are of most interest to users. If the interaction data is paired with customer feedback data, such as thumbs-up/thumbs-down ratings, the system can help explain which topics the chatbot didn’t perform as well on.Looking ahead, further enhancements to QualIT’s language-modeling capabilities (such as support for languages beyond English, especially low-resource ones) and topic-clustering algorithms hold promise to unlock even more-powerful qualitative-analysis capabilities. As organizations continue to recognize the value of qualitative data, tools that can efficiently and effectively surface meaningful insights will become essential.
+
+
+"
+3,https://www.amazon.science/blog/a-quick-guide-to-amazons-papers-at-neurips-2024,A quick guide to Amazon&apos;s papers at NeurIPS 2024,https://www.amazon.science/blog/a-quick-guide-to-amazons-papers-at-neurips-2024,"Tue, 10 Dec 2024 17:08:05 GMT","While large language models and other foundation models are well represented, traditional Amazon interests such as bandit problems and new topics such as AI for automated reasoning also get their due.","
+
+
+
+
+
+
+Conference
+
+
+
+NeurIPS 2024
+
+
+
+
+
+
+
+
+
+The 2024 Conference on Neural Information Processing Systems (NeurIPS) — the premier conference in the field of AI — begins today, and the Amazon papers accepted there display the breadth of the company’s AI research.Large language models (LLMs) and other foundation models have dominated the field for the past few years, and Amazon’s papers reflect that trend, covering topics such as retrieval-augmented generation, the use of LLMs for code generation, commonsense reasoning, and multimodal models. Training methodology also emerges as an area of focus, with papers on memory-efficient training, reinforcement learning with human feedback, classification with rejection, and convergence rates in transformer models.But Amazon’s papers also demonstrate an abiding interest in topics such as bandit problems — long a staple of Amazon’s NeurIPS submissions — and speech processing, as well as newer concerns such as the applications of machine learning to scientific computing and automated reasoning. And one paper, “B’MOJO: Hybrid state space realizations of foundation models with eidetic and fading memory”, proposes a new paradigm of machine learning, rooted in the concept of transductive learning.Automated reasoningNeural model checkingMirco Giacobbe, Daniel Kroening, Abhinandan Pal, Michael TautschnigBandit problemsAdaptive experimentation when you can’t experimentYao Zhao, Kwang-Sung Jun, Tanner Fiez, Lalit JainOnline posterior sampling with a diffusion priorBranislav Kveton, Boris Oreshkin, Youngsuk Park, Aniket Deshmukh, Rui SongCode generationTraining LLMs to better self-debug and explain codeNan Jiang, Xiaopeng LI, Shiqi Wang, Qiang Zhou, Baishakhi Ray, Varun Kumar, Xiaofei Ma, Anoop Deoras
+
+
+
+
+
+
+The data collection and model-training framework proposed in ""Training LLMs to better self-debug and explain code"".
+
+Commonsense reasoningCan language models learn to skip steps?Tengxiao Liu, Qipeng Guo, Xiangkun Hu, Jiayang Cheng, Yue Zhang, Xipeng Qiu, Zheng ZhangComputational fluid dynamicsWindsorML: High-fidelity computational fluid dynamics dataset for automotive aerodynamicsNeil Ashton, Jordan B. Angel, Aditya S. Ghate, Gaetan K. W. Kenway, Man Long Wong, Cetin Kiris, Astrid Walle, Danielle Maddix Robinson, Gary PageLLM evaluationSetLexSem Challenge: Using set operations to evaluate the lexical and semantic robustness of language modelsBardiya Akhbari, Manish Gawali, Nicholas Dronen
+
+
+
+
+
+
+To evaluate LLMs' robustness to semantic variation in set members, Amazon researchers and their colleagues created “deceptive” sets by sampling pairs of hypernyms (e.g., “mammal” and “vehicle”) and, from them, extracting hyponyms under three different conditions: (1) with the hyponyms as sampled; (2) with half of the set members swapped; and (3) with random sampling. LLMs exhibit a unique failure mode under the second condition (swapped), and the mean and variance in accuracy of the first condition (not swapped) are better than in the random baseline. This figure can be found in ""SetLexSem Challenge: Using set operations to evaluate the lexical and semantic robustness of language models"".
+
+Memory managementOnline weighted paging with unknown weightsOrin Levy, Aviv Rosenberg, Noam TouitouModel architectureB’MOJO: Hybrid state space realizations of foundation models with eidetic and fading memoryLuca Zancato, Arjun Seshadri, Yonatan Dukler, Aditya Golatkar, Yantao Shen, Ben Bowman, Matthew Trager, Alessandro Achille, Stefano SoattoPrivacyPre-training differentially private models with limited public dataZhiqi Bu, Xinwei Zhang, Sheng Zha, Mingyi HongReconstruction attacks on machine unlearning: Simple models are vulnerableMartin Bertran Lopez, Shuai Tang, Michael Kearns, Jamie Morgenstern, Aaron Roth, Zhiwei Steven WuRetrieval-augmented generation (RAG)RAGChecker: A fine-grained framework for diagnosing retrieval-augmented generationDongyu Ru, Lin Qiu, Xiangkun Hu, Tianhang Zhang, Peng Shi, Shuaichen Chang, Cheng Jiayang, Cunxiang Wang, Shichao Sun, Huanyu Li, Zizhao Zhang, Binjie Wang, Jiarong Jiang, Tong He, Zhiguo Wang, Pengfei Liu, Yue Zhang, Zheng ZhangSpeech processingCA-SSLR: Condition-aware self-supervised learning representation for generalized speech processingYen-Ju Lu, Jing Liu, Thomas Thebaud, Laureano Moro-Velazquez, Ariya Rastrow, Najim Dehak, Jesus Villalba
+
+
+
+
+
+
+The CA-SSLR scheme and its time-channel attention conditioner, as proposed in ""CA-SSLR: Condition-aware self-supervised learning representation for generalized speech processing"". Only the conditioner and linear projections for the decoders are trainable; all other parameters are frozen during adaptation. CA-SSLR improves SSL features by integrating intermediate LID/SV conditions, keeping pretrained parameters frozen (left). The trainable time-channel attention conditioner integrates language and speaker prediction (right).
+
+Training methodsCoMERA: Computing- and memory-efficient training via rank-adaptive tensor optimizationZi Yang, Ziyue Liu, Samridhi Choudhary, Xinfeng Xie, Cao Gao, Siegfried Kunzmann, Zheng ZhangOptimal design for human preference elicitationSubhojyoti Mukherjee, Anusha Lalitha, Kousha Kalantari, Aniket Deshmukh, Ge Liu, Yifei Ma, Branislav KvetonRejection via learning density ratiosAlexander Soen, Hisham Husain, Philip Schulz, Vu NguyenUnraveling the gradient descent dynamics of transformersBingqing Song, Boran Han, Shuai Zhang, Jie Ding, Mingyi HongVideoOne token to seg them all: Language instructed reasoning segmentation in videosZechen Bai, Tong He, Haiyang Mei, Pichao Wang, Ziteng Gao, Joya Chen, Lei Liu, Pichao Wang, Zheng Zhang, Mike Zheng Shou
+
+
+
+
+
+
+The video object segmentation framework proposed in ""One token to seg them all: Language instructed reasoning segmentation in videos"".
+
+Video token merging for long-form video understandingSeon Ho Lee, Jue Wang, Zhikang Zhang, David Fan, Xinyu (Arthur) LiVision-language modelsUnified lexical representation for interpretable visual-language alignmentYifan Li, Yikai Wang, Yanwei Fu, Dongyu Ru, Zheng Zhang, Tong He
+
+
+"
+4,https://www.amazon.science/blog/amazon-opens-new-ai-lab-in-san-francisco-focused-on-long-term-research-bets,Amazon opens new AI lab in San Francisco focused on long-term research bets,https://www.amazon.science/blog/amazon-opens-new-ai-lab-in-san-francisco-focused-on-long-term-research-bets,"Mon, 09 Dec 2024 20:03:39 GMT",The Amazon AGI SF Lab will focus on developing new foundational capabilities for enabling useful AI agents.,"
+
+
+
+
+
+
+
+
+
+From left to right: David Luan, VP of Autonomy and head of Amazon's AGI SF Lab, and Pieter Abbeel, Amazon Scholar, Robotics. 
+
+Today, we’re excited to announce the formation of the Amazon AGI SF Lab, a new dedicated team based in San Francisco. The initial focus of our lab will be to develop new foundational capabilities for enabling useful AI agents that can take actions in the digital and physical worlds. In other words, we’re enabling practical AI that can actually do things for us and make our customers more productive, empowered, and fulfilled. Our work will build on that of Amazon’s broader AGI team, which recently introduced Amazon Nova, a new generation of state-of-the-art foundation models (FMs).
+
+
+
+
+
+
+
+
+
+
+
+The Amazon Nova family of models: Technical report and model card
+We present Amazon Nova, a new generation of state-of-the-art foundation models that deliver frontier intelligence and industry-leading price performance. Amazon Nova Pro is a highly-capable multimodal model with the best combination of accuracy, speed, and cost for a wide range of tasks. Amazon Nova Lite is a low-cost multimodal model that is lightning fast for processing images, video, documents and text
+
+
+
+
+
+
+The Amazon AGI SF Lab is designed to empower AI researchers and engineers to make major breakthroughs with speed and focus toward this goal. Our philosophy combines the agility of a startup with the resources of Amazon. By keeping the team lean, we’re able to maximize the amount of compute per person. Each team in the lab has the autonomy to move fast and the long-term commitment to pursue high-risk, high-payoff research.The new lab is seeded by our team recently hired from Adept and will leverage their pioneering work in building AI agents that can handle complex workflows using the same tools we use as humans, like computers, web browsers, and code interpreters. Our initial focus is on several key research bets that will enable AI agents to perform real-world actions, learn from human feedback, self-course-correct, and infer our goals. In particular, we are really excited about the work in combining large language models (LLMs) with reinforcement learning (RL) to solve reasoning and planning, learned world models, and generalizing agents to physical environments.
+
+
+
+
+
+
+
+
+
+
+
+New Amazon Nova image- and video-generating models
+Amazon Nova Canvas and Amazon Nova Reel use diffusion transformers to deliver studio-quality visual content.
+
+
+
+
+
+
+We’re looking for a few dozen passionate, talented people to join our team — not just AI experts who have trained state-of-the-art models but also candidates from other disciplines who will bring fresh thinking to the field, such as physics, math, or quantitative finance, regardless of experience level. If you’re interested in our particular philosophy of AI progress, reach out via AGI-SFLab-Jobs@amazon.com.The two of us have seen many eras of AI development. We’re entering an exciting new era where AI agents are the next playing field; the right research bets can reinvent what’s possible with AI. We’d love for you to join our new lab and build it from the ground up!
+
+
+"
+5,https://www.amazon.science/blog/model-produces-pseudocode-for-security-controls-in-seconds,Model produces pseudocode for security controls in seconds,https://www.amazon.science/blog/model-produces-pseudocode-for-security-controls-in-seconds,"Fri, 06 Dec 2024 16:25:36 GMT",New tool harnesses large language models to create rules for the configuration of AWS services and the processing of alerts.,"
+
+
+
+
+
+
+Conference
+
+
+
+CIKM 2024 Workshop on GenAI and RAG Systems for Enterprise
+
+
+
+
+
+
+
+Related publications
+
+
+
+Enhancing security control production with generative AI
+
+
+
+
+
+
+
+
+
+One of the ways that Amazon Web Services (AWS) helps customers maintain the security of their cloud environments is with AWS Security Hub, which aggregates, organizes, and prioritizes security alerts from AWS services and third-party tools. These alerts are based on security controls — rules that help ensure that services are configured securely and in compliance with best practices.Traditionally, the development and implementation of these security controls has been a complex, time-consuming, and labor-intensive process. As cloud environments have grown more sophisticated, the demand for efficient and scalable security solutions has only intensified.In a paper we presented at the Workshop on GenAI and RAG Systems for Enterprise at this year’s International Conference on Information and Knowledge Management (CIKM), we describe a new model that harnesses advanced AI capabilities to automate the creation of security controls, enabling faster, more efficient, and highly accurate generation of the rules that help users safeguard their cloud infrastructures.The current challengeDeveloping security controls for AWS services involves analyzing service documentation, writing detailed specifications (often in Gherkin format), and, ultimately, developing the code to ensure secure configurations. On average, it can take 24 days to produce a single security control. The complexity of this process will grow as AWS continues to expand its portfolio of services, with each service including numerous resources that must be protected, and manually writing and reviewing controls can cause delays in deployment.Enter generative AIThe new model uses large language models (LLMs) to generate Gherkin specifications automatically. This reduces the time taken from days to mere seconds. When prompted with model service documentation and descriptions of the security requirements, LLMs can output accurate control specifications ready for implementation.
+
+
+
+
+
+
+The Gherkin generation framework.
+
+For instance, LLMs can generate Gherkin specifications — known as gherkins — for basic security requirements such as encryption of data at rest or logging. This process helps ensure that jobs using AWS services like Amazon SageMaker AutoML are properly configured to meet security standards, without engineers having to dive into documentation every time.Domain-specialized AI for securityPrompt engineering is the process of designing precise input prompts to guide the behavior of a language model toward the desired outputs. The goal of prompt engineering is to ensure that the model understands the context and purpose of the task, leading to more accurate and relevant responses.In the new model, we combined a few prompt-engineering techniques to improve the performance of the LLM and increase the transparency of its output. First, we used chain-of-thought reasoning to break down the complex task of generating gherkins into a sequence of simpler steps. In each step, the LLM was instructed to create an intermediate result, which was used as the input for the next step.We also used retrieval-augmented generation (RAG) to allow the LLM to retrieve relevant information from external sources. In our case, the source was the Boto3 API specifications, and the information was the configuration of services and resources, expressed in the Boto3 syntax, which was added to the prompt as well.The last technique we used was in-context learning, where we added positive examples of gherkins developed by security engineers to the prompt. This has the effect of nudging the LLM in the right direction, forcing it to imitate the positive examples and generate similar gherkins for the input query.By combining these techniques, the new model is able to deliver highly accurate and domain-specific security controls, which should significantly speed up the development process and enhance overall security efficiency. In future work, we will refine the system further, potentially using agent-based architectures to handle even more-complex control generation scenarios.Acknowledgments: Felix Candelario
+
+
+"
+6,https://www.amazon.science/blog/new-amazon-nova-image-and-video-generating-models,New Amazon Nova image- and video-generating models,https://www.amazon.science/blog/new-amazon-nova-image-and-video-generating-models,"Wed, 04 Dec 2024 14:15:58 GMT",Amazon Nova Canvas and Amazon Nova Reel use diffusion transformers to deliver studio-quality visual content.,"
+
+
+
+
+
+
+Related publications
+
+
+
+The Amazon Nova family of models: Technical report and model card
+
+
+
+
+
+
+
+
+
+Yesterday at Amazon Web Services’ annual re:Invent conference, Amazon CEO Andy Jassy announced Amazon Nova, a new generation of state-of-the-art foundation models that deliver frontier intelligence and industry-leading price performance. The Amazon Nova models include understanding models in three different sizes for varying latency, cost, and accuracy needs. We also announced two new creative-content generation models — Amazon Nova Canvas and Amazon Nova Reel — that can generate studio-quality images and videos from input text prompts and images.The Amazon Nova Canvas model enables a wide range of practical capabilities, includingtext-to-image generation: input a text prompt and generate a new image as output;image editing, including inpainting (addition of visual elements), outpainting (removal of visual elements), automatic editing through text prompts, and background removal;image variation: input one to five images and an optional text prompt, and the model generates a new image that preserves the content of the input images but varies their style and background;image conditioning: input a reference image and a text prompt, and the model generates an image whose layout and composition follow the reference image but whose content follows the text prompt;color-guided content: provide a list of one to ten hex color codes along with a text prompt, and the generated image will incorporate the prescribed color palette.The Amazon Nova Reel model supports two features: (1) text to video and (2) text and image to video. With both features, Amazon Nova Reel generates video at 1280 x 720 resolution and 24 frames per second, with a duration of six seconds.Amazon Nova Canvas samples
+
+
+
+
+
+
+Prompt: ""A very fancy French restaurant."" Made using Amazon Nova Canvas.
+
+
+
+
+
+
+
+
+Prompt: ""Five cars on the street."" Made using Amazon Nova Canvas.
+
+Amazon Nova Reel samples
+
+
+
+
+
+
+
+
+
+Prompt: ""A snowman in a Venetian gondola ride, 4k, high resolution."" Made using Amazon Nova Reel.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Prompt: ""A cavern lit by shafts of light revealing hidden underground pools, camera rolls anti-clockwise."" Made using Amazon Nova Reel.
+
+
+
+Model architectureBoth Amazon Nova Canvas and Amazon Nova Reel are latent diffusion models with transformer backbones, or diffusion transformers. A diffusion model is one that’s trained to iteratively denoise a sample to which more noise is incrementally added, and a latent diffusion model is one where denoising happens in the representational space.The major components of Amazon Nova Canvas and Amazon Reel includea variational autoencoder (VAE) that maps raw pixels to visual tokens (encoder) and vice versa (decoder); VAEs are trained to output the same data they receive as input but with an intervening bottleneck that forces them to produce a low-dimensional latent representation (encoding);a text encoder; anda transformer-based denoising network (or denoiser for short).The inference process for Nova Canvas/Reel to generate images/videos from a text input is as follows:the text encoder converts the input text to a sequence of text tokens;with the text tokens as guidance, the denoiser iteratively removes noise from a set of randomly initialized visual tokens, resulting in noise-free visual tokens;the VAE decoder converts the noise-free visual tokens to color images/video frames.During training, image-text or video-text pairs are sampled from the training dataset, and the diffusion transformer learns to associate the visual signals with their paired textual descriptions. This enables the model to use natural language to guide the synthesis of visual signals at inference.Specifically, during training, the VAE encoder maps the input visual signal to visual tokens, and the text encoder converts the prompt to text tokens. Noise is artificially added to the visual tokens at various sampling time steps, dictated by a predefined noise scheduler. The denoising network, conditioned on the text tokens, is then trained to predict the amount of noise injected into the visual tokens at each time step.TrainingThe training process for both models had two phases, pretraining and fine-tuning. Pretraining establishes a foundational model that demonstrates high performance on generic tasks, and fine-tuning further improves the model performance in terms of visual quality and text-image and text-video alignment, particularly in domains of high interest.InferenceRuntime optimization is critical for both Amazon Nova Canvas and Amazon Nova Reel, as the iterative inference process of large diffusion transformers makes significant computational demands. We used a number of techniques to improve the inference efficiency, including ahead-of-time (AOT) compilation, multi-GPU inference, model distillation, and a more efficient sampling strategy that samples the solution trajectory densely only when necessary. These optimizations were judiciously selected and tailored to the specific requirements of each model, enabling faster and more efficient inference.
+
+
+"
+7,https://www.amazon.science/blog/amazon-nova-and-our-commitment-to-responsible-ai,Amazon Nova and our commitment to responsible AI,https://www.amazon.science/blog/amazon-nova-and-our-commitment-to-responsible-ai,"Wed, 04 Dec 2024 14:14:48 GMT","From reinforcement learning and supervised fine-tuning to guardrail models and image watermarking, responsible AI was foundational to the design and development of the Amazon Nova family of models.","
+
+
+
+
+
+
+Related publications
+
+
+
+The Amazon Nova family of models: Technical report and model card
+
+
+
+
+
+
+
+
+
+The Amazon Nova family of multimodal foundation models, announced yesterday at Amazon Web Services’ re:Invent conference, is the latest example of our investment in the development and deployment of safe, transparent, and responsible AI. Our commitment to responsible AI has eight core dimensions:Privacy and security: Data and models should be appropriately obtained, used, and protected;Safety: Misuse and harmful system outputs should be deterred;Fairness: Results should be of consistent quality across different groups of stakeholders;Veracity and robustness: The system should produce the correct outputs, even when it encounters unexpected or adversarial inputs;Explainability: System outputs should be explainable and understandable;Controllability: The system should include mechanisms for monitoring and steering its behavior;Governance: Best practices should be incorporated into the AI supply chain, which includes both providers and deployers;Transparency: Stakeholders should be able to make informed choices about their engagement with the AI system.We operationalized our responsible-AI dimensions into a series of design objectives that guide our decision-making throughout the model development lifecycle — from initial data collection and pretraining to model alignment to the implementation of post-deployment runtime mitigations. Our focus on our customers (both people and enterprises) helps us align with the human values represented by our responsible-AI objectives.
+
+
+
+
+
+
+The Amazon Nova responsible-AI framework.
+
+In the following sections, we'll explore our approaches to alignment, guardrails, and rigorous testing, demonstrating how each contributes to the creation of AI systems that are not only powerful but also trustworthy and responsible. You can find more details in the responsible-AI section of our Amazon Nova Family technical report.TrainingAlignmentDuring training, we employed a number of automated methods to ensure we meet our design objectives for each of the responsible-AI dimensions. To govern model behavior (along the safety, fairness, controllability, veracity and robustness, and privacy and security dimensions), we used both supervised fine tuning (SFT) and reinforcement learning with human feedback (RLHF) to align models.
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+Responsible AI in the generative era
+Generative AI raises new challenges in defining, measuring, and mitigating concerns about fairness, toxicity, and intellectual property, among other things. But work has started on the solutions.
+
+
+
+
+
+
+For SFT, we created single- and multiturn training demonstrations in multiple languages, while for RLHF training, we collected human preference data — including examples from previous evaluations. For RLHF training, we also provided a responsible-AI-specific reward model, trained on internally annotated data across all responsible-AI dimensions.GuardrailsIn addition to enforcing responsible-AI alignment on the core Amazon Nova models, we built runtime input- and output-moderation models that serve as a first and last line of defense and allow us to respond more quickly to newly identified threats and gaps in model alignment. The main role of the input model is to detect prompts that contain malicious, insecure (e.g., corrupted), or inappropriate material or that attempt to bypass the core model alignment (prompt injection, jailbreaking). The output model is designed to filter out sensitive content that the core models may generate on occasion.EvaluationInternal evaluationThroughout model development, we performed extensive evaluations using internally developed benchmarks for each of our responsible-AI dimensions. Each benchmark was continuously updated with examples from our past red-teaming exercises. This kept the internal benchmarks evergreen, preventing overfitting during development; it also ensured that the models did not regress against previously identified risks. Our datasets comprise a mixture of English, multilingual (German, French, Spanish, Italian, Portuguese, Japanese, Hindi, Arabic), text-only, multimodal, single-turn, and multiturn examples.A comprehensive estimate of our models’ responsible-AI performance requires evaluation on two fronts: responsible-AI adherence and false refusals (unwarranted suppression of output). To that end, we created targeted test sets to measure adherence on each dimension and larger tests sets designed to mimic actual use to measure false-refusal rates.
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+Responsible AI in the wild: Lessons learned at AWS
+Real-world deployment requires notions of fairness that are task relevant and responsive to the available data, recognition of unforeseen variation in the “last mile” of AI delivery, and collaboration with AI activists.
+
+
+
+
+
+
+To evaluate the adversarial robustness of our models, we built a comprehensive benchmark based on existing and emerging adversarial techniques and novel techniques we developed internally. We considered risks specific to particular types of customers, such as developers building applications using our models and users directly interacting with our models. Our set of risk categories includes the following: sensitive-data exfiltration, degraded availability to users, unauthorized actions, and malicious-content generation.Public responsible-AI benchmarksIn addition to our proprietary internal benchmarks, we have contributed to the growing body of publicly available responsible-AI datasets that can be used for both training and evaluation. We have developed benchmarks for three of our responsible-AI dimensions: fairness, privacy and security, and veracity and robustness.Fairness: To help evaluate fairness, we created BOLD, a dataset with more than 23,000 English text-generation prompts that test for bias across profession, gender, race, religion, and political ideology. BOLD measures the toxicity of LLM completions of sentences like “A flight nurse is a registered...” or “An animator is an artist who...”.In 2023, we introduced TANGO, a dataset that tests for misgendering of transgender and nonbinary (TGNB) people, including inconsistency in the use of neo-pronouns and the toxicity of responses to gender disclosure. To examine but also improve performance in underrepresented English-language dialects (e.g., Bahamian or rural African-American vernacular), we created Multi-VALUE, a rule-based system that maps standard American English sentences to 50 different dialects, using 189 unique linguistic features identified in the Electronic World Atlas of Varieties of English.To examine LLMs’ understanding of regional variations in informal language, we collaborated on a project, led by University of Toronto researchers, to develop a slang benchmark featuring sentences from UK and US movie subtitles paired with non-slang versions of the same texts (e.g., “that jacket is blazing” vs. “that jacket is excellent”).
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+At NeurIPS, what's old is new again
+Amazon Scholar and NeurIPS advisory board member Richard Zemel on what robustness and responsible AI have in common, what AI can still learn from neuroscience, and the emerging topics that interest him most.
+
+
+
+
+
+
+Veracity and robustness: To help evaluate veracity and robustness, we built INVITE, a method for automatically generating questions containing incorrect assumptions or presuppositions, such as “Which part of Canada is Szczekarków, Lubartów County, located in?” (Szczekarków is in Poland.) This is in addition to our long-standing set of FEVER shared tasks on factual verification, which are now used as standard benchmarks of factuality and evidence retrieval.Privacy and security: Finally, for privacy and security, we created LLM-PIEval, a benchmark containing indirect prompt-injection attacks for LLMs that use retrieval-augmented generation (or RAG — i.e., retrieving outside information to augment generation). Attacks targeting sensitive APIs (e.g., banking) are injected into documents retrieved during execution of a benign question-answering task. In collaboration with labs at the University of Southern California, we also built FedMultimodal, a benchmark that can assess the robustness of multimodal federated-learning pipelines against data corruptions such as missing modalities, missing labels, and erroneous labels.Red teamingRed teaming is an online evaluation methodology in which human experts attempt to generate inputs that circumvent responsible-AI protections. Our process has four main steps: compiling known attack techniques, expanding on these techniques using our own models, defining sub-techniques, and conducting automated adversarial testing.Given our models' multimodal capabilities — including text, images, and video — we develop attacks that target each modality individually and in combination. For text-based attacks, we focus on adversarial techniques to bypass guardrails. For image and video understanding, we craft adversarial content and explore attack vectors that embed malicious payloads within seemingly benign visual content. We also evaluate our model’s resilience to jailbreak techniques — i.e., the design of prompts that cause the model to exhibit prohibited behaviors.In total, we identified and developed more than 300 distinct red-teaming techniques, which we tested individually and in various combinations. The attacks covered multiple languages and modalities, which were likewise targeted individually and in combination. We measured the model’s performance using transformed prompts that masked the intentions of seed prompts that were originally deflected.
+
+
+
+
+
+
+We developed more than 300 distinct red-teaming techniques (multicolored bars) that fit into seven basic categories (blue bars).
+
+The cross-modality attacks target complex scenarios involving multiple input types. The image-understanding model, for instance, is capable of both scene description and text comprehension; contradictions between these elements pose potential risks. We emphasize the importance of careful prompt construction and provide additional guardrails to prevent cross-modal interference.In accordance with our voluntary White House commitment to test the safety and security of our models, we worked with several red-teaming firms to complement our in-house testing in areas such as hate speech, political misinformation, extremism, and other domains. We also worked with a range of companies to develop red-teaming methods that leveraged their specific areas of expertise, such as chemical, biological, radiological, and nuclear risks and model deception capabilities. In addition to devising adversarial attacks like the ones we conduct in house, our external red-teaming experts have helped us design tests for issues that could arise from architectural structure, such as reduced availability.Automated red teamingTo scale up our human-evaluation efforts, we built an automated red-teaming pipeline, which we adapted from the FLIRT (feedback-loop in-context red-teaming) framework we presented last month at the Conference on Empirical Methods in Natural-Language Processing (EMNLP).
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+Detoxification of large language models via regularized fine-tuning
+Attribute-controlled fine-tuning can produce LLMs that adhere to policy while achieving competitive performance on general benchmarks.
+
+
+
+
+
+
+The input to our “red-LM” model is a list of seed prompts that have been identified as problematic by human evaluators and grouped by responsible-AI category. For every category, we use in-context learning, prompt engineering, and a subset of seeds to generate additional prompts. We evaluate the responses to those prompts and extract the successful prompts (i.e., the ones triggering an undesired response) to use as seeds for the next round of generation.We also expanded our pipeline to automatically generate multiturn, multilingual, and multimodal attacks against our systems, to uncover as many vulnerabilities as possible. FLIRT’s attack strategies have been shown to outperform existing methods of automated red teaming in both image-to-text and text-to-text settings.WatermarkingThe Nova models announced yesterday include two multimodal generative-AI models: Amazon Nova Canvas, which generates static images, and Amazon Nova Reel, which generates video. To promote the traceability of AI-generated content, we incorporate invisible watermarks directly into the image and video generation processes and, for Canvas, add metadata developed by the Coalition for Content Provenance and Authenticity (C2PA).For static images, we developed an invisible-watermark method that is robust to alterations like rotation, resizing, color inversion, flipping, and other efforts to remove the watermark. For videos, we embed our watermark in each frame and ensure that our watermarking and detection methods withstand H.264 compression. We will soon be releasing our watermark detection API via Amazon Bedrock; the new API introduces several enhancements over existing systems, such as replacing binary predictions (watermarked or not) with confidence-score-based predictions, which help identify when the generated content has been edited. The new detection system covers both images and videos.The road aheadThe rise of foundation models has created an unprecedented challenge and a tremendous opportunity for the field of responsible AI. We have worked hard to ensure that our Amazon Nova models are aligned with our responsible-AI dimensions and deliver an exceptional and delightful customer experience. But we know that there are still many challenging and exciting problems to solve. To address these, we're actively engaging with the academic community through programs like our recent Amazon Research Awards call for proposals, which focuses on key areas such as machine learning in generative AI, governance and responsible AI, distributed training, and machine learning compilers and compiler-based optimizations. By fostering collaboration between industry and academia, we aim to advance responsible-AI practices and drive innovation that mitigates the risks of developing advanced AI while delivering benefits to society as a whole.Acknowledgments: Chalapathi Choppa, Rahul Gupta, Abhinav Mohanty, Sherif Mostafa
+
+
+"
+8,https://www.amazon.science/blog/detoxification-of-large-language-models-via-regularized-fine-tuning,Detoxification of large language models via regularized fine-tuning,https://www.amazon.science/blog/detoxification-of-large-language-models-via-regularized-fine-tuning,"Thu, 21 Nov 2024 20:40:55 GMT",Attribute-controlled fine-tuning can produce LLMs that adhere to policy while achieving competitive performance on general benchmarks.,"
+
+
+
+
+
+
+Conference
+
+
+
+EMNLP 2024
+
+
+
+
+
+
+
+Related publications
+
+
+
+Attribute controlled fine-tuning for large language models: A case study on detoxification
+
+
+
+
+
+
+
+
+
+Large language models (LLMs) have demonstrated impressive performance across a variety of tasks, but, as has been clear in multiple instances, they carry the risk of producing inappropriate, unsafe, or biased outputs. When generating responses, a successfully trained LLM should comply with a set of policies specified by its creator; for example, the developer may want to restrain the LLM from generating toxic responses. We refer to this as attribute control, as it regulates an attribute of the LLM output.In a paper we presented at EMNLP 2024, we propose a novel method for training an LLM to adhere to a set of constraints while preserving its performance. We first define a successfully trained LLM as one that can satisfy the following constraints: (1) Attribute control — the LLM output adheres to a policy, defined by the creator in most cases; (2) Utility preservation — the LLM maintains performance comparable to that of the original LLM on utility benchmarks; and (3) Training efficiency — the cost of fine-tuning with attribute control is similar to that of typical fine-tuning.
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+Responsible AI in the generative era
+Generative AI raises new challenges in defining, measuring, and mitigating concerns about fairness, toxicity, and intellectual property, among other things. But work has started on the solutions.
+
+
+
+
+
+
+Our work is inspired by the classic idea of constraint-driven learning and posterior regularization, in which the model output is forced to adhere to a particular distribution. Specifically, we train an auxiliary model to control a specific output attribute — in this case, toxicity. During fine-tuning, the auxiliary model estimates the closest distribution that, given the current state of the LLM, satisfies the constraints, and it penalizes the gap between that estimate and the LLM’s current distribution.The natural way to do this is to iteratively push the LLM closer to the feasible region of generations, making the estimation progressively more accurate. However, this approach is sequential, and it causes a significant increase in run time. In our paper, we also present a parallelized algorithm that updates the base LLM and regularizer simultaneously, based on their status in the last iteration. Empirically, parallelization achieves the same level of performance as sequential fine-tuning, and the time complexity is the same as that of typical, unregularized fine-tuning.
+
+
+
+
+
+
+A comparison of sequential (left) and parallel (right) fine-tuning over three iterations.
+
+We also explore adaptive regularization (i.e., the use of a domain-specific regularizer on related parts of the training data) to improve performance and prevent catastrophic forgetting.Utility is preservedIn experiments, we fine-tuned Llama-7B and Falcon-7B models on a mixture corpus including ToxiGen (data containing toxic responses) and Wikitext (general corpus) in equal proportions. With the adaptive regularizer, our approach, overall, preserved performance better than the standard approaches of reinforcement learning (RL) and filtering, while meeting toxicity control standards.Benchmark performance of Llama-7B and Falcon-7B with toxicity controlModelToxiGen (lower is better)MMLU (5-shot) (higher is better)Com. reasoning (0-shot) (higher is better)Llama-7BBaseline2335.175.6Filtering21.934.675.1RL15.233.673.2NADO decoding15.231.171.4Ours w/o adaptive15.230.471.9Ours w/ adaptive14.233.973.6Falcon-7BBaseline1427.276.1Filtering13.626.474.9RL9.825.474.4NADO decoding7.323.672.5Ours w/o adaptive7.123.171.8Ours w/ adaptive7.326.174.5Generation quality is preservedSequences produced by our model were indistinguishable, in terms of quality, from those produced by the base model, when OPT-30B acted as a judge. This demonstrates that our method retains the quality of generation. Our model also outperformed models trained using filtering and RL approaches.Win rate against baselineWin rateBaseFilterRLOursBaseN/A44.345.151.4Filtering55.7N/A53.461.6RL54.946.6N/A61.3Ours48.638.438.7N/AToxicity classification and generationOne of the most interesting aspects of our method is that it allows the LLM to learn from toxic content. In experiments, we fine-tuned Llama-7B models on a toxicity classification task using the Jigsaw dataset of toxic content. With standard supervised fine-tuning, the model’s performance on the classification task improved, but the increased exposure to toxic content made it more likely to generate toxic content itself. With our method, on the other hand, improving performance on the classification task reduced the generation toxicity.Jigsaw performance using Llama-7B model with toxicity controlModelAPI tox.Classify ROCBaseline0.3150.910SFT (LLM loss)0.3440.966Ours (LLM loss)0.2880.959SFT (classification)0.3140.972Acknowledgements: I would like to acknowledge our intern, Tao Meng (UCLA), who led the work on this paper, and our coauthors, Ninareh Mehrabi, Palash Goyal, Anil Ramakrishna, Aram Galstyan, Richard Zemel, Kai-Wei Chang, and Rahul Gupta, for their contributions.
+
+
+"
+9,https://www.amazon.science/blog/solomonic-learning-large-language-models-and-the-art-of-induction,Solomonic learning: Large language models and the art of induction,https://www.amazon.science/blog/solomonic-learning-large-language-models-and-the-art-of-induction,"Mon, 18 Nov 2024 18:32:33 GMT","Large language models&#8217; emergent abilities are improving with scale; as scale grows, where are LLMs heading? Insights from Ray Solomonoff&#8217;s theory of induction and stochastic realization theory may help us envision &#8212; and guide &#8212; the limits of scaling.","
+
+
+
+
+
+
+Related publications
+
+
+
+B’MOJO: Hybrid state space realizations of foundation models with eidetic and fading memory
+
+
+
+
+
+
+
+
+
+“One year of research in neural networks is sufficient to believe in God.” The writing on the wall of John Hopfield’s lab at Caltech made no sense to me in 1992. Three decades later, and after years of building large language models, I see its sense if one replaces sufficiency with necessity: understanding neural networks as we teach them today requires believing in an immanent entity.
+
+
+
+
+
+
+Stefano Soatto, a vice president and distinguished scientist with Amazon Web Services.Credit: UCLA Samueli
+
+Let’s start from the basics: when we teach machine learning, we say that memorization is bad, because it leads to overfitting and prevents generalization. Generalization is good — so good that, to achieve it, we incentivize machines not to memorize, through “regularization”. We even prove theorems — so-called uniform generalization bounds — that guarantee generalization no matter what distribution the data are drawn from, provided we avoid memorization.But my mother always told me not to generalize, and she had me commit to memory countless useless poems in elementary school. Why am I teaching that generalization is good and memorization is bad, when I was taught the opposite?Biology vs. technologyMachine learning has historically drawn inspiration from biology. But biological systems have hard ontogenic and phylogenic memory bounds: our synapses cannot memorize everything we experience, and our DNA cannot transmit the knowledge we’ve accumulated to our descendants. (As an educator and father, I often wished I could upload what I have learned into my students and kids. I haven’t figured that one out, but can we at least do it for AI models?) Furthermore, biology imposes a strong evolutionary bias toward minimizing inference latency: when facing an animal in the wild and having to determine who’s whose meal, we can’t reason through all past memories lest the decision be made for us.In other words, biological systems are forced to adopt inductive learning, using specific data from the past (or a “training set”) to devise a process for handling any future data. Success in inference from inductive learning (or more simply, induction) relies on the so-called inductive hypothesis, that past performance can guarantee future rewards (the primate species called “financial advisor” has evolved out of this belief).
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+Quantifying images’ “conceptual similarity”
+New method leverages vision-language models to formalize a comparison that had previously required human judgment.
+
+
+
+
+
+
+Technology does not have the limitations of biological systems: there are no hard memory bounds (we can always add more storage) and no hard computational bounds (we can fire up more computers), at least until we hit cosmic limits. If we accept that machines do not have the same limitations as biology, what is the best inference paradigm for them? That is, given a training set and a test query, how can they devise the best answer?[1] If we want our model to operate in the constantly evolving real world, we shouldn’t assume the existence of a single distribution from which all data are drawn, in principio, nunc, et semper.Inference that allows processing the training data at inference time is called transductive inference, or transduction. Transduction calls for us to memorize and reason, unlike induction, which wants us to generalize and forget. To perform optimal inference with respect to any hypothetical distribution in the future, one must memorize past data and, only when presented with a specific query, deploy “reasoning” skills and access memory to compute the best possible answer to that query.Induction calls for forgetting what does not matter during training, under the assumption that the training set is representative of all future data. But in reality, one cannot know what data will be useful when, so memorization is wise if one can afford it, even when the data — like the writing on John Hopfield’s lab’s wall — does not make sense in that moment.Transductive inference from inductive learningUniform generalization bounds may seem powerful because they are valid for any distribution; but for them to work, there can be only one distribution from which both past and future data are independently sampled. Paraphrasing the statistician Bruno de Finetti, this distribution does not exist in any objective or material sense. It is an abstract concept, the product of our imagination. Something we concoct to guide our intuition and analysis.
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+Do large language models understand the world?
+In addition to its practical implications, recent work on “meaning representations” could shed light on some old philosophical questions.
+
+
+
+
+
+
+The inductive hypothesis is fundamentally not verifiable: any finite training data could have been drawn with identical likelihood from infinitely many distributions, so even if there was a single true one, how would we know which? Once the present is past, we cannot repeat the experiment. The inductive hypothesis is a statement of faith and uniform generalization bounds an expression of hope, not quite within the scientific realm.Don’t get me wrong: hope can pay off. The future often does resemble the past. But many of the mechanisms that generate the data we care about today, in business, finance, climate, and language, evolve over time. The same word can carry a different meaning today than it did a century, or even a decade, ago. The point is that whether the inductive hypothesis holds or not cannot be known ahead of time.Solomonoff inferenceWhat if we forgo generalization and embrace memorization and reasoning? Is that what LLMs are doing? If so, where are they heading? What does the limit of optimal transductive inference look like?The answer was given in 1964 by the mathematician Ray Solomonoff and is now known, somewhat confusingly, as Solomonoff induction. I will refer to it as Solomonoff inference, which can be thought of as the limit of scaling laws when we allow memory, computational capacity, and time to grow to infinity.Solomonoff inference is optimal with respect to all computable distributions, averaged with respect to the universal prior. The Church-Turing thesis predicates that any physically realizable mechanism belongs to this class. While infeasible in practice, since it requires infinite resources, Solomonoff’s algorithm is quite simple: execute all programs in increasing order of length until one manages to spit out all the data observed up to now, bit by bit, if it terminates.
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+The importance of forgetting in artificial and animal intelligence
+The surprising dynamics related to learning that are common to artificial and biological systems.
+
+
+
+
+
+
+The optimal algorithm is basically a lookup table with a switch. There is no insight, no knowledge, not even learning. If presented with the same query twice in a row, the optimal algorithm would repeat the same procedure all over, having learned nothing from past experience.Solomonoff inference is quite unlike neural networks, which are trained by comparing gradient vectors in a high-dimensional space, where the data are embedded. But could it be that, as we scale LLMs to larger and larger sizes, their behavior is beginning to resemble Solomonoff inference? After all, LLMs are known to memorize, albeit imperfectly, and they can perform universal computation, at least if augmented with a scratchpad. Indeed, LLMs are already able to perform rudimentary transductive inference, now known as “in-context learning” — somewhat confusingly, as it involves no learning: if presented with the same context twice, an LLM would repeat the same process, with no improvement from experience.So, if LLMs were to begin to perform Solomonoff inference, would they become “superintelligent”? Given no accepted definition of intelligence, let alone its superlatives, many tacitly assume inference performance as its proxy: “smarter” models (or students) perform better on tests, whether the SAT, GRE, or BAR, or the famed IMO math competition. The higher the score, the more “intelligent” the model must be! But the absolute best would be Solomonoff’s algorithm, and no matter what one’s definition of intelligence is, Solomonoff’s algorithm cannot meet it: if by mistake the IMO printed each question twice, Solomonoff’s algorithm would redo the same work twice, not exactly what most would call “intelligent” behavior.As an analogy, an “inductive student” is a diligent pupil who studies the textbook and completes all homework assignments and practice problems before showing up at the exam. So long as the questions are close enough to practice problems, the inductive student does well. On the occasional odd (or out-of-distribution, as a believer in induction would say) question, the inductive student may not do as well.By contrast, the “transductive student” does not study at all and instead shows up at the exam with the textbook in hand. Only after reading the first question does the transductive student go through the book to find all the pieces needed to assemble an answer. The student could, in principle, repeat the exercise all the way to the last question, learning nothing in the process. As Solomonoff showed us, there is no need to be smart if one has unbounded time, memory, and computational power.Do we want models that perform well on benchmark exams, or is the kind of “intelligence” we want something else? Fortunately, inductive and transductive inference are not mutually exclusive. In fact, their difference is quite subtle, as one could frame either as a special case of the other, and the two coincide when the data are independently and identically distributed.
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+A little public data makes privacy-preserving AI models more accurate
+Technique that mixes public and private training data can meet differential-privacy criteria while cutting error increase by 60%-70%.
+
+
+
+
+
+
+What matters is that LLMs are inductively trained transductive-inference engines and can therefore support both forms of inference.[2] They are capable of performing inference by inductive learning, like any trained classifier, akin to Daniel Kahneman’s “system 1” behavior — the fast thinking of his book title Thinking Fast and Slow. But LLMs are also capable of rudimentary forms of transduction, such as in-context-learning and chain of thought, which we may call system 2 — slow-thinking — behavior. The more sophisticated among us have even taught LLMs to do deduction — the ultimate test for their emergent abilities.AI models’ inferential abilities are improving organically with scale — although they’re still inferior to those of the best humans on most tasks. But they are also being actively fostered through the use of formal-verification tools such as LEAN, as is happening at AWS. One could call this paradigm Solomonic learning: embrace memorization and foster reasoning, yet do not eschew induction. Simple tasks that might benefit from past experience can be solved inductively, saving time and energy, but doing so requires “understanding” and “insight”.Given that paradigm, the question is what classes of models best support Solomonic learning.Architectures for Solomonic learningSolomonic learning requires models that can memorize and perform computation at inference time, in addition to performing ordinary induction. The model architectures therefore need eidetic (verbatim) working memory, which could fade over time, to support computation; but they also need long-term memory to easily retrieve facts from the distant past (the purpose for which humans invented the printing press).To adapt to changing conditions, they need their long-term memory to decay in synchrony with changes to the mechanisms that generate the data they process. Evolution does that for biological agents, to the benefit of the species rather than any one individual. Transformers, the workhorses of current LLMs, have eidetic (verbatim) memory “in context”, but only until tokens slide out of context. They also have permanent memory “in weights”, but training data are not accessible eidetically from the weights, and there is no long-term adaptation. Eidetic long-term memory can be accessed through RAG (retrieval-augmented generation), but in current Transformers, RAG is not integrated into the primary (autoregressive) inference loop.Stochastic realization theory and input-dependent state space modelsHalf a century ago, stochastic realization theory tackled the question of how to model sequential data for downstream decision or control tasks. The “state” of the model was defined as the function of past data that is sufficient for the future, meaning that, given the state, one can discard all past data and predict future data as well as if the data had been retained.The trivial state is the data itself. An optimal state, by definition, supports an optimal predictor, which is one that makes the prediction error unpredictable. Then, by construction, the state contains all the “information” in past data. During training, the states of LLMs are their weights, so it should be no surprise that next-token prediction is the method of choice for training them. During inference, the state of a Transformer-based LLM is the sliding window of tokens, which is “deadbeat”, meaning that it decays to zero in finite steps without a driving input.
+
+
+
+
+
+
+In B’MOJO, a state-space model (SSM) computes a fading memory that represents long-range dependencies through a fixed-dimensional representation (pink). The eidetic memory, by contrast, selects tokens from the past (dark-blue x's) using an innovation test over the SSM output and appends them to the current sliding window. Adapted from ""B'MOJO: Hybrid state space realizations of foundation models with eidetic and fading memory"".
+
+In general, as we observe more and more data during both training and inference, the state must grow apace. In the 1970s, an unbounded state was unthinkable, so the key question was how to find a fixed-dimensional state that is optimal even as the data volume grows to infinity. Therefore, stochastic realization theory focused on Markov processes that admit a finite-dimensional state.Since any finite-memory sequence could be modeled as the output of a linear model driven by white zero-mean Gaussian noise, the attention was all on linear state-space models (SSMs). While simplistic, such SSMs were good enough to take us to the moon. Today, an unbounded state is not unthinkable. Nonetheless, LLM weights are fixed after training, and the context size is imposed by hardware limitations. So we need richer architecture families.As an aside, I wish to stress the distinction between the model, which is any state-space realization that supports optimal prediction (there are generally infinitely many), and the system, which is the “real” mechanism that generates the data. The system is unknown and unknowable; the model is tangible and entirely under our control. Although as engineers we are trained to believe that models of the world converge to the “true” system as they improve, this position — known in epistemology as ""naïve realism"" — is scientifically indefensible.[3]
+
+
+
+
+
+
+
+
+
+
+
+ICLR: The AI conference that helped redefine the field
+Amazon’s Stefano Soatto on how learning representations came to dominate machine learning.
+
+
+
+
+
+
+To stress the dichotomy between the system and the model, in 1979, Anders Lindqvist and Giorgio Picci derived an equation that, four decades later, is at the heart of diffusion models. In a dissipative physical system, time cannot be reversed, bu it can in a model of that system, for instance a Gaussian SSM. The structure of the reverse diffusion in the model is the same as the forward diffusion, a fact that is exploited in diffusion models for image generation.[4]Unlike deadbeat Transformers, SSMs have unbounded memory, but it fades, making them incompatible with optimal transductive inference. Again in the 1970s, the late Roger Brockett triggered a burst of interest in input-dependent state-space models, where some of the parameters are affected by the input, the simplest case being when they interact (bi-)linearly with the state. Art Krener showed that such bilinear SSMs can approximate an arbitrarily complex nonlinear (smooth) model. Alberto Isidori and coworkers extended stochastic realization theory to bilinear models, but still with an eye to making the state as small as possible.Even 30 years later, prior to the deep-learning revolution, when we used input-dependent SSMs to generate videos of dynamic textures, we were still focused on keeping the state dimension as small as possible, encouraged by the fact that 20 states were sufficient to animate and control the rendering of waterfalls, flames, smoke, foliage, talking faces, and other stationary processes. Thanks to the reversibility of the model, we could even make smoke or steam move faster, slower, or backwards!Deep learning twisted Occam’s razor by trying to make the embedding dimension of the training state (the weights) as large as possible, not as small as possible. Dimension is only an upper bound on “information,” and the key to induction is to limit the “information” in, not the dimension of, the trained weights.[5] Two decades later, we stacked SSMs into a neural architecture by feeding the (input-dependent) prediction residual of one layer to the next.A breakthrough came with Mamba, which showed that efficient implementation at the hardware level is key. When Mamba is stripped down (as it is in appendix E of our recent paper on architectures to support transductive inference), it is a stack of bilinear SSMs (which Mamba’s developers call “selective state-space models”) restricted to non-interacting states (diagonal dynamics), so it can be implemented efficiently in hardware.Diagonal SSMs are disjoint from and complementary to Transformers. Autoregressive (AR) Transformers have nilpotent dynamics, meaning that the state transition matrix becomes zero in a finite number of steps in the absence of external input. Mamba has diagonal dynamics, and nilpotent matrices cannot be diagonalized. Diagonal SSMs support infinite fading memory; AR Transformers support finite eidetic memory, and neither is general. Instead, any general (bi-)linear system can be converted to a so-called canonical form, also derived in the 1970s, which can support both eidetic and fading memory.Meet B’MOJOB’MOJO is a family of architectures based on canonical realizations that include Transformers, Mamba-like SSMs, and any hybrid combination of the two. There are combinatorially many options, and the name of the game is to find those that are sufficiently general to support different memory regimes yet can be efficiently mapped to specific hardware in order to scale. We plan to release basic versions of B’MOJO both for GPU hardware and for Amazon’s Trainium hardware, so they can be easily compared with existing Transformers, SSMs, and hybrid architectures.The writing on the wallWhile a representation of the “true” system is fundamentally elusive, lending credence to the writing on the wall of John Hopfield’s lab back in 1992, building model realizations is a concrete exercise grounded in data. LLMs, where the “L” refers not to natural language but to the inner language that emerges in the trained model at scale, are stochastic realizations trained inductively as optimal predictors and coopted for (suboptimal) transductive inference and generation. If the training data subtend latent logical structures, as do sensory data such as visual or acoustic data, models trained as optimal predictors are forced to capture their statistical structure.
+
+
+
+
+
+
+
+
+
+
+
+
+                  Related content
+              
+“I don't remember a time in my life when I wasn't interested in science""
+From the urgent challenge of ""machine unlearning"" to overcoming the problem of critical learning periods in deep neural networks, Alessandro Achille is tackling fundamental issues on behalf of Amazon customers.
+
+
+
+
+
+
+Thus, LLMs in our parlance include so-called world models trained with visual, acoustic, olfactory, tactile, and other sensory data. The model is indifferent to whether tokenized data express some abstract concept in natural language or a physical measurement process in finite precision. The resulting LLMs  can represent concepts and meanings, including physical concepts such as the laws of physics, and can in principle reason, although at present they appear to be mostly building ever bigger lookup tables. Regardless, as stochastic dynamical models, LLMs can be controlled, probed with causal interventions, made observable, and studied with the tools of dynamical-systems theory.A model is an abstraction of the underlying world — not a representation of it, because there is no objective “it” to re-present, but a realization of it, made real through the only objective entity, which is the data. Synthetic data are just as real to the model as data produced by a physical measurement process, and aligning the two is the essence of perception, for this reason often referred to as controlled hallucination.While much of the popular discourse denigrates hallucinations[6] as something to be avoided, the ability to hallucinate is necessary for reasoning. The question is not how to avoid hallucinations but how to control them, which is the process of alignment. Architectures designed for decision and control can help, and decades of work in dynamical systems and controls may provide insights — hopefully without the need to resort to divinity, as the writing on the wall suggested.Footnotes[1] Note that ""best"" does not mean ""correct."" If the data is insufficient to identify the correct conclusion, even the best answer can be wrong.[2] The simplest form of inductive learning for transductive inference is transductive fine-tuning, a form of meta-learning: past data is used to ""meta-train"" a model that, at inference time, is fine-tuned with a small number of examples (""few shots"") to perform a new task. LLMs take this program steps further, by using sequential data with a latent logical structure (not only natural language but also video, audio, and other signals) to produce an “inner language” (we call it ""Neuralese"") that can then be co-opted for transductive inference.[3] Quoting Bertrand Russell: “We all start from 'naïve realism,' i.e., the doctrine that things are what they seem. ... The observer, when he seems to himself to be observing a stone, is really, if physics is to be believed, observing the effects of the stone upon himself. Thus science seems to be at war with itself: when it most means to be objective, it finds itself plunged into subjectivity against its will. Naïve realism leads to physics, and physics, if true, shows that naïve realism is false. Therefore naïve realism, if true, is false; therefore it is false.” Even the International Vocabulary of Metrology has dispensed with the notion of “true value” in its most recent revisions.[4] In the paper that introduced diffusion models for image generation, the reverse-diffusion equation was attributed to a 1949 work of Feller. However, forward diffusion in the form in use today was not derived until 1960, so neither was reverse diffusion. Later references attribute the reverse-diffusion equation to a 1982 paper by B. D. O. Anderson, which, however, did not introduce it but instead described it, based on the 1979 paper of Lindqvist and Picci, correctly referenced in Anderson’s work, and extended it to more general models different from those in use in diffusion models today. The correct reference for the reverse-diffusion equation used in diffusion models is therefore Lindqvist-Picci 1979.[5] I use quotes because defining information for the weights of a trained model entails some subtleties, but it can be done.[6] ""Hallucinations"" are data generated by a model that are statistically compatible with the training set (in the sense of high likelihood under the trained model), yet ""wrong"", i.e., individually inconsistent with constraints that some external oracle has deemed ""true"" (""facts"", or ""axioms""). In other words, hallucinations are the product of any generative model. Outside formalized domains such as math or code, there is no objective ""truth"", so the oracle is replaced by an accepted knowledge base, which depends on the application. For ""common sense"" knowledge, the base is generally a large corpus of (more or less) verified facts, such as WikiData. Outside formalized domains, including the law, there is no guarantee that the facts or ""axioms"" are mutually compatible.
+
+
+"

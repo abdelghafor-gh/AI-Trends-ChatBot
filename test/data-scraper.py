@@ -77,8 +77,8 @@ class Scraper:
 
             self.data.append(record)
             self.n += 1
-            print(self.n)
-            print(record)
+            # print(self.n)
+            # print(record)
 
         return self.data
 
@@ -110,8 +110,10 @@ class Scraper:
 
             self.data.append(record)
             self.n += 1
-            print(self.n)
-            print(record)
+            if self.n == 10:
+                break
+            # print(self.n)
+            # print(record)
 
         return self.data
     
@@ -151,22 +153,24 @@ class Scraper:
 
             self.data.append(record)
             self.n += 1
-            print(self.n)
-            print(record)
+            if self.n == 10:
+                break
+            # print(self.n)
+            # print(record)
 
         return self.data
 
 
     def get_data(self):
-        self.get_amazon_science_data()
-        self.get_siliconangle_data()
+        return self.get_amazon_science_data()
+        return self.get_siliconangle_data()
         return self.get_analyticsindiamag_data()
 
 
 # Usage example
 scraper = Scraper()
 data = scraper.get_data()
-print(data)
+# print(data)
 df = pd.DataFrame(data)
 # df.to_parquet("src/DATA/data.parquet")
 df.to_csv("data.csv")
