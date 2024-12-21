@@ -1,0 +1,6 @@
+terraform/.terraform
+setup_azure_auth.ps1
+
+.python_packages
+__pycache__
+.venv
