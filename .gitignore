@@ -1,19 +1,53 @@
 # Temporary ignored folders
 infrastructure/
 azure-data-pipeline/
-test/.rss
+test/*
 
 # critically important files
 user-cred.json
 cred.json
 Microsoft.App
+Report.pdf
+
+# Azure Functions artifacts
+azure-pipeline/azure-function/bin
+azure-pipeline/azure-function/obj
+azure-pipeline/azure-function/appsettings.json
+azure-pipeline/azure-function/local.settings.json
+
+# Azure Functions and Terraform
+azure-pipeline/azure-function/terraform/.terraform/
+azure-pipeline/azure-function/terraform/.terraform.lock.hcl
+azure-pipeline/azure-function/terraform/terraform.tfstate
+azure-pipeline/azure-function/terraform/terraform.tfstate.backup
+azure-pipeline/azure-function/terraform/tfplan
+azure-pipeline/azure-function/terraform/.terraformrc
+azure-pipeline/azure-function/terraform/terraform.tfvars
+azure-pipeline/azure-function/terraform/crash.log
 
 # Python
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
 .Python
 .venv/
-.env
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+*.env
 
 # Terraform
 .terraform/
@@ -39,7 +73,6 @@ secrets.py
 azure_credentials.json
 
 # Environment and Dependency Files
-.env
 requirements.txt.lock
 
 # Databricks
@@ -52,3 +85,6 @@ Thumbs.db
 # Untracked Files
 Report.pdf
 rss-scrapers/
+
+# Logs
+*.log
