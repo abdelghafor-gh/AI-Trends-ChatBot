@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 3.0"
     }
+    databricks = {
+      source  = "databricks/databricks"
+      version = "~> 1.0"
+    }
   }
 }
 
@@ -123,7 +127,7 @@ resource "azurerm_cosmosdb_mongo_database" "mongodb" {
   account_name        = azurerm_cosmosdb_account.db.name
 }
 
-# Cosmos DB Collection for news
+# Cosmos DB Collection for News
 resource "azurerm_cosmosdb_mongo_collection" "news" {
   name                = "news"
   resource_group_name = azurerm_resource_group.rg.name
@@ -150,6 +154,46 @@ resource "azurerm_data_factory" "adf" {
   }
 }
 
+# Databricks Workspace
+resource "azurerm_databricks_workspace" "dbw" {
+  name                = "dbw-ai-feeds-${random_string.unique.result}"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  sku                 = "standard"
+
+  tags = {
+    Environment = "Development"
+  }
+}
+
+# Databricks Provider Configuration
+provider "databricks" {
+  host = azurerm_databricks_workspace.dbw.workspace_url
+  azure_workspace_resource_id = azurerm_databricks_workspace.dbw.id
+}
+
+# Databricks Cluster
+resource "databricks_cluster" "shared_autoscaling" {
+  cluster_name            = "shared-autoscaling"
+  spark_version          = "13.3.x-scala2.12"
+  node_type_id           = "Standard_DS3_v2"
+  autotermination_minutes = 5
+
+  autoscale {
+    min_workers = 1
+    max_workers = 3
+  }
+
+  spark_conf = {
+    "spark.databricks.cluster.profile" : "singleNode"
+    "spark.master" : "local[*]"
+  }
+
+  custom_tags = {
+    "ResourceClass" = "SingleNode"
+  }
+}
+
 # Databricks Linked Service
 resource "azurerm_data_factory_linked_service_azure_databricks" "databricks" {
   name            = "linked-databricks"
@@ -157,10 +201,11 @@ resource "azurerm_data_factory_linked_service_azure_databricks" "databricks" {
   description     = "Databricks Linked Service"
   adb_domain      = "https://${azurerm_databricks_workspace.dbw.workspace_url}"
 
-  existing_cluster_id = databricks_cluster.shared_autoscaling.cluster_id
+  existing_cluster_id = databricks_cluster.shared_autoscaling.id
 
   depends_on = [
-    azurerm_databricks_workspace.dbw
+    azurerm_databricks_workspace.dbw,
+    databricks_cluster.shared_autoscaling
   ]
 }
 
@@ -252,33 +297,4 @@ resource "azurerm_data_factory_pipeline" "bronze_to_gold" {
       ]
     }
   ])
-}
-
-# Trigger: Daily Schedule
-resource "azurerm_data_factory_trigger_schedule" "daily" {
-  name            = "trigger-daily"
-  data_factory_id = azurerm_data_factory.adf.id
-  pipeline_name   = azurerm_data_factory_pipeline.bronze_to_gold.name
-
-  interval  = 24
-  frequency = "Hour"
-
-  # Run 1 hour after the Azure Function (which runs at midnight)
-  schedule {
-    hours   = [1]
-    minutes = [0]
-  }
-}
-
-# Output values
-output "function_app_name" {
-  value = azurerm_linux_function_app.function.name
-}
-
-output "function_app_url" {
-  value = "https://${azurerm_linux_function_app.function.default_hostname}"
-}
-
-output "storage_account_name" {
-  value = azurerm_storage_account.storage.name
 }
