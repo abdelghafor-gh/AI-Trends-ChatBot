@@ -143,14 +143,65 @@ azure-pipeline/
 
 ## 🔧 Backend Services
 
-> 🚧 **Coming Soon**: Backend Implementation
+Our backend is built with FastAPI and LangChain, providing a robust chatbot service with vector-based search capabilities.
 
-### Planned Features
+### 🏗 Architecture
 
-- API endpoints
-- Data persistence
-- Business logic
-- Integration services
+- **FastAPI Framework**: High-performance API server
+- **LangChain**: Advanced language model integration
+- **Pinecone**: Vector store for semantic search
+- **Cohere**: Language model for chat interactions
+
+### 📁 Service Structure
+
+```
+chatbot/
+├── src/                    # Source code
+│   ├── api/               # API-related code
+│   │   ├── models.py     # Pydantic models
+│   │   └── routes.py     # FastAPI routes
+│   └── core/             # Core functionality
+│       ├── chat.py       # Chat and prompt flow
+│       └── vector_store.py  # Pinecone operations
+├── .env                   # Environment variables
+├── main.py               # Application entry point
+└── requirements.txt      # Project dependencies
+```
+
+### 🔌 API Endpoints
+
+- **Chat Endpoint**
+
+  - Route: `POST /chat`
+  - Purpose: Send messages to the chatbot
+  - Features: Context-aware responses, AI trends analysis
+- **Health Check**
+
+  - Route: `GET /`
+  - Purpose: Monitor API availability
+
+### 🛠 Core Components
+
+1. **Chat Engine**
+
+   - LangChain-based conversation flow
+   - Context management
+   - Response generation
+2. **Vector Store**
+
+   - Pinecone integration
+   - Semantic search capabilities
+   - Efficient data retrieval
+3. **API Layer**
+
+   - FastAPI routes and handlers
+   - Pydantic models for validation
+   - Swagger/ReDoc documentation
+
+### 📊 Documentation
+
+- Interactive API docs: `http://localhost:8000/docs`
+- Alternative docs: `http://localhost:8000/redoc`
 
 ## 🚀 Getting Started
 
@@ -194,20 +245,12 @@ To create a production build:
 
 ```bash
 npm run build
-# or
-yarn build
-# or
-pnpm build
 ```
 
 Then start the production server:
 
 ```bash
 npm start
-# or
-yarn start
-# or
-pnpm start
 ```
 
 ## ⚙️ Environment Setup
