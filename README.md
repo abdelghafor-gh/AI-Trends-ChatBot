@@ -294,7 +294,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 - **[TechCrunch - AI](https://techcrunch.com/category/artificial-intelligence/)**
   - RSS: [`techcrunch.com/category/artificial-intelligence/feed`](https://techcrunch.com/category/artificial-intelligence/feed/)
 - **[The Guardian - AI](https://www.theguardian.com/technology/artificialintelligenceai)**
-  - RSS: [`theguardian.com/technology/artificialintelligenceai/rss`](https://www.theguardian.com/technology/artificialintelligenceai/rss)
+  - RSS:[`theguardian.com/technology/artificialintelligenceai/rss`](https://www.theguardian.com/technology/artificialintelligenceai/rss)
 - **[The Verge - AI](https://www.theverge.com/ai-artificial-intelligence)**
   - RSS: [`theverge.com/ai-artificial-intelligence/rss/index.xml`](https://www.theverge.com/ai-artificial-intelligence/rss/index.xml)
 - **[VentureBeat - AI](https://venturebeat.com/category/ai/)**

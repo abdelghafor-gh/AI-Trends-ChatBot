@@ -7,7 +7,8 @@ snippets/
 user-cred.json
 cred.json
 Microsoft.App
-Report.pdf
+# Report.pdf
+Report.md
 
 # Azure Functions artifacts
 azure-pipeline/azure-function/bin
