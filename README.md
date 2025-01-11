@@ -53,11 +53,12 @@ AI Trends ChatBot is a sophisticated web application that combines modern authen
 ## 🏗 Frontend Architecture
 
 ### 📱 Application Architecture
+
 ![Application Architecture](assets/app-digram-1.png)
 
 ### 🛠 Tech Stack
 
-- **Framework**: Next.js 13 (App Router)
+- **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS + DaisyUI
 - **Authentication**: Supabase Auth
@@ -99,6 +100,7 @@ frontend/
 Our data pipeline leverages Azure services to collect, process, and serve AI news and trends efficiently.
 
 ### 🏗 Pipeline Architecture
+
 ![Data Pipeline Architecture](assets/ai-trends-chatbot-data-pipeline.png)
 
 ### 🔧 Components
