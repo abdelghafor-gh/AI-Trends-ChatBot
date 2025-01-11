@@ -2,7 +2,7 @@
 
 > 🌟 A modern AI-powered chat application for exploring and discussing AI trends with real-time insights and analytics.
 
-[![Next.js](https://img.shields.io/badge/Next.js-13-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-Auth-green?style=flat-square&logo=supabase)](https://supabase.com/)
@@ -52,6 +52,9 @@ AI Trends ChatBot is a sophisticated web application that combines modern authen
 
 ## 🏗 Frontend Architecture
 
+### 📱 Application Architecture
+![Application Architecture](assets/app-digram-1.png)
+
 ### 🛠 Tech Stack
 
 - **Framework**: Next.js 13 (App Router)
@@ -95,16 +98,8 @@ frontend/
 
 Our data pipeline leverages Azure services to collect, process, and serve AI news and trends efficiently.
 
-### 🏗 Architecture Overview
-
-```mermaid
-graph TD
-    A[Azure Function] -->|Daily Trigger| B[Data Lake]
-    B -->|Raw Data| C[Databricks]
-    C -->|Transform| D[Cosmos DB]
-    D -->|Structured| E[Databricks]
-    E -->|Embed| F[AI Search]
-```
+### 🏗 Pipeline Architecture
+![Data Pipeline Architecture](assets/ai-trends-chatbot-data-pipeline.png)
 
 ### 🔧 Components
 
