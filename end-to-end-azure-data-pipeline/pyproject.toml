@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "api-trends-chatbot"
+version = "1.0"
+description = ""
+authors = ["Admin <bentouhamimohamedrida@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+feedparser = "^6.0.11"
+markdownify = "^0.14.1"
+azure-storage-blob = "^12.24.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
