@@ -17,12 +17,22 @@ The extraction process leverages Azure Functions to incrementally extract data f
    - Despite having multiple source websites, we utilize just one Azure Function to handle the extraction process for all sources.  
    - This approach simplifies the architecture and reduces overhead by managing multiple sources through a single function, which is efficient and easier to maintain.
 
+### Why Use One Azure Function for All Sources
+
+1. **🛠️ Simplified Architecture**: One function reduces complexity in deployment and maintenance.
+  
+2. **💰 Reduced Overhead**: Lower operational costs by managing multiple sources through a single function.
+  
+3. **🧠 Memory Optimization**: Allocate memory once, optimizing usage across all sources instead of individually.
+  
+4. **⏱️ Consistent Execution Time**: Maintain the same execution time while efficiently handling tasks for all sources.
+
 ### 💰 Total Cost
 
 The **Total Cost** can be calculated using the formula:
 
 **Total Cost** =  
-> **<font color="blue">💻 Execution Cost</font> + <font color="green">💾 Storage Cost</font> + <font color="red">🌐 Outbound Data Transfer Cost</font>**
+> **💻 Execution Cost + 💾 Storage Cost + 🌐 Outbound Data Transfer Cost**
 
 ### 💻 Execution Cost
 
@@ -31,4 +41,6 @@ The **Execution Cost** can be calculated using the formula:
 **Execution Cost** =  
 > **(🔢 Number of Executions) × (⏱️ Execution Time (in seconds)) × (💾 Memory Size (in GB)) × (💲 Price per GB-second)**
 
-This equation helps in understanding the cost implications of running Azure Functions based on their usage.
+### Conclusion
+
+Using a single Azure Function simplifies management, optimizes resources, and reduces costs.
